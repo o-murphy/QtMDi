@@ -1,0 +1,41 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: Woff2 Decompress
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      
+    steps:
+    - name: Checkout Woff2
+      uses: actions/checkout@v3
+      with:
+        repository: "https://github.com/google/woff2"
+    
+    - name: Build Woff2
+      run: |
+        # cd woff2
+        make clean all
+
+    - name: Checkout curent repo
+      uses: actions/checkout@v3
+
+    - name: Decompress Woff2 fonts
+      run: |
+        woff2_decompress ./material-symbols-outlined.woff2
+        woff2_decompress ./material-symbols-rounded.woff2
+        woff2_decompress ./material-symbols-sharp.woff2
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: my-artifacts
+        path: .
+        
