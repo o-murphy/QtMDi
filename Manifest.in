@@ -1,0 +1,6 @@
+include src/qtmdi/font/*.otf
+include src/qtmdi/font/*.ttf
+include src/qtmdi/font/*.json
+include src/qtmdi/symbols/*.otf
+include src/qtmdi/symbols/*.ttf
+include src/qtmdi/symbols/*.json
