@@ -14,11 +14,9 @@ jobs:
       fail-fast: false
       
     steps:
-    
-    - name: Prepare environmant
-      run: |
-        sudo apt-get update -y
-        sudo apt-get install -y brotli
+
+    - name: Checkout curent repo
+      uses: actions/checkout@v3
 
     - name: Clone Woff2
       run: |
@@ -29,15 +27,12 @@ jobs:
         cd woff2
         make clean all
 
-    - name: Checkout curent repo
-      uses: actions/checkout@v3
-
     - name: Decompress Woff2 fonts
       run: |
         ls ../ 
-        ../woff2/woff2_decompress ./material-symbols-outlined.woff2
-        ../woff2/woff2_decompress ./material-symbols-rounded.woff2
-        ../woff2/woff2_decompress ./material-symbols-sharp.woff2
+        ./woff2_decompress ./material-symbols/material-symbols-outlined.woff2
+        ./woff2_decompress ./material-symbols/material-symbols-rounded.woff2
+        ./woff2_decompress ./material-symbols/material-symbols-sharp.woff2
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
