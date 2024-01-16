@@ -33,9 +33,9 @@ dependencies = ['qtawesome', 'qtpy']
 dynamic = ["version"]
 
 [project.urls]
-"Homepage" = "https://github.com/o-murphy/qtmdi"
-"Bug Reports" = "https://github.com/o-murphy/qtmdi/issues"
-"Source" = "https://github.com/o-murphy/qtmdi"
+"Homepage" = "https://github.com/o-murphy/QtMDi"
+"Bug Reports" = "https://github.com/o-murphy/QtMDi/issues"
+"Source" = "https://github.com/o-murphy/QtMDi"
 
 
 [tool.setuptools]

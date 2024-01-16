@@ -29,10 +29,13 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install setuptools wheel build
+        python -m pip install --upgrade build
         
     - name: Build package
-      run: python -m build
+      run: |
+        python -m build
+        ls -R  # Print directory structure
+        ls dist  # Print contents of the dist directory
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
