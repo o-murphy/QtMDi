@@ -18,7 +18,7 @@ __author__ = "o-murphy"
 __copyright__ = ("(C) 2023 Yaroshenko Dmytro (https://github.com/o-murphy)",)
 
 __credits__ = ["o-murphy"]
-__version__ = "1.0.0b6"
+# __version__ = "1.0.0"
 
 
 SEARCH_DIR = os.path.dirname(__file__)

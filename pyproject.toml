@@ -5,12 +5,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "QtMDi"
-
 authors = [
     { name="o-murphy", email="thehelixpg@gmail.com" },
 ]
 description = "QtMDI (Qt Material Design Icons)"
-readme = "README.md"
 requires-python = ">=3.8"
 keywords = ["pyqt", "pyside", "material-icons", "material-symbols"]
 license = {file = "LICENSE"}
@@ -30,7 +28,7 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: CPython",
 ]
 dependencies = ['qtawesome', 'qtpy']
-dynamic = ["version"]
+dynamic = ["version", "readme"]
 
 [project.urls]
 "Homepage" = "https://github.com/o-murphy/QtMDi"
@@ -46,9 +44,10 @@ where = ["src"]
 
 [tool.setuptools.dynamic]
 version = {attr = "qtmdi.__version__"}
+readme = {file = ["README.md"]}
 
 [project.scripts]
 qtmdi-browser = "qtmdi:run"
 
 [project.optional-dependencies]
-dev = ['pylint', 'flake8', 'pytest']
+dev = ['pylint', 'flake8', 'pytest', 'bump2version']
