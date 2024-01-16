@@ -1,0 +1,71 @@
+name: Material Symbols Fonts Update
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    - cron: '0 0 * * 0'  # Run every Sunday at midnight
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    permissions:
+      # Give the default GITHUB_TOKEN write permission to commit and push the changed files back to the repository.
+      contents: write
+    
+    strategy:
+      fail-fast: false
+
+      
+    steps:
+
+    - name: Checkout curent repo
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.head_ref }}
+
+    - name: Clone Woff2
+      run: |
+        git clone --recursive https://github.com/google/woff2.git
+        
+    - name: Build Woff2
+      run: |
+        cd woff2
+        make clean all
+
+    - name: Initialize npm and install material-symbols
+      run: |
+        npm init -y
+        npm install material-symbols@latest
+
+    - name: Show files
+      run: |
+        ls
+
+    - name: Decompress Woff2 Fonts
+      run: |
+        for file in ./node_modules/material-symbols/*.woff2; do
+          ./woff2/woff2_decompress "$file"
+        done
+
+    - name: Copy .ttf files to src/gmi/symbols
+      run: |
+        cp ./node_modules/material-symbols/*.ttf ./src/gmi/symbols
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: ttf
+        path: ./node_modules/material-symbols/*.tff
+
+    - name: Commit and Push Changes
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: "Scheduled material-symbols update"
+        commit_options: "--no-verify"
+        file_pattern: "src/gmi/symbols/*.ttf"
+        name: "o-murphy"
+        email: "thehelixpg@gmail.com"
+        push: true
