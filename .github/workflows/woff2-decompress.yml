@@ -3,6 +3,9 @@ name: Woff2 Decompress
 on:
   workflow_dispatch:
 
+  schedule:
+    - cron: '0 0 * * 0'  # Run every Sunday at midnight
+
 jobs:
   build:
 
@@ -34,9 +37,13 @@ jobs:
 
     - name: Decompress Woff2 fonts
       run: |
-        ./woff2/woff2_decompress ./material-symbols/material-symbols-outlined.woff2
-        ./woff2/woff2_decompress ./material-symbols/material-symbols-rounded.woff2
-        ./woff2/woff2_decompress ./material-symbols/material-symbols-sharp.woff2
+        for file in ./material-symbols/*.woff2; do
+          ./woff2/woff2_decompress "$file"
+        done
+
+    - name: Copy .ttf files to src/gmi/symbols
+      run: |
+        cp ./material-symbols/*.ttf ./src/gmi/symbols
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
@@ -47,11 +54,9 @@ jobs:
     - name: Commit and Push Changes
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
-        commit_message: "Add compiled files"
+        commit_message: "Scheduled material-symbols update"
         commit_options: "--no-verify"
-        file_pattern: "material-symbols/*.ttf"
+        file_pattern: "src/gmi/symbols/*.ttf"
         name: "o-murphy"
         email: "thehelixpg@gmail.com"
         push: true
-        # branch: "woff2-decompress"  # Replace with your branch name
-        
