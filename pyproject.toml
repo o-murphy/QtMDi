@@ -40,12 +40,9 @@ dynamic = ["version"]
 
 [tool.setuptools]
 py-modules = ["QtMDi"]
-# include-package-data = true
 
 [tool.setuptools.packages.find]
-where = ["./src"]
-include = ["qtmdi*"]
-
+where = ["src"]
 
 [tool.setuptools.dynamic]
 version = {attr = "qtmdi.__version__"}

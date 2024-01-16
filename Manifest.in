@@ -1,6 +1,4 @@
-include src/qtmdi/font/*.otf
-include src/qtmdi/font/*.ttf
-include src/qtmdi/font/*.json
-include src/qtmdi/symbols/*.otf
-include src/qtmdi/symbols/*.ttf
-include src/qtmdi/symbols/*.json
+recursive-include src *.otf *.ttf *.json
+include README.md
+include LICENSE
+include py.typed
