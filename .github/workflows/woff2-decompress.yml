@@ -14,6 +14,12 @@ jobs:
       fail-fast: false
       
     steps:
+    
+    - name: Prepare environmant
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y brotli
+    
     - name: Checkout Woff2
       uses: actions/checkout@v3
       with:
