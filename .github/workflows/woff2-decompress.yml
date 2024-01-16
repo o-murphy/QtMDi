@@ -46,14 +46,9 @@ jobs:
         for file in ./node_modules/material-symbols/*.woff2; do
           ./woff2/woff2_decompress "$file"
         done
-#      run: |
-#        for file in ./material-symbols/*.woff2; do
-#          ./woff2/woff2_decompress "$file"
-#        done
 
     - name: Copy .ttf files to src/gmi/symbols
       run: |
-#        cp ./material-symbols/*.ttf ./src/gmi/symbols
         cp ./node_modules/material-symbols/*.ttf ./src/gmi/symbols
 
     - name: Upload Artifacts
