@@ -1,4 +1,4 @@
-name: Woff2 Decompress
+name: Material Symbols Fonts Update
 
 on:
   workflow_dispatch:
@@ -41,7 +41,11 @@ jobs:
         npm init -y
         npm install material-symbols@latest
 
-    - name: Decompress Woff2 fonts
+    - name: Show files
+      run: |
+        ls
+
+    - name: Decompress Woff2 Fonts
       run: |
         for file in ./node_modules/material-symbols/*.woff2; do
           ./woff2/woff2_decompress "$file"
