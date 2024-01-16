@@ -37,7 +37,6 @@ jobs:
 
     - name: Initialize npm and install material-symbols
       run: |
-        cd ./src/gmi/symbols
         npm init -y
         npm install material-symbols@latest
 
