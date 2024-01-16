@@ -1,3 +1,10 @@
+"""
+# QtMDI (Qt Material Design Icons)
+qtawesome extension with the latest variable icon fonts for Material Symbols (Python 3)
+(C) 2023 Yaroshenko Dmytro (https://github.com/o-murphy)
+"""
+
+
 import os
 import sys
 
@@ -5,6 +12,13 @@ from qtawesome.icon_browser import IconBrowser
 from qtpy import QtWidgets
 
 import qtawesome
+
+
+__author__ = "o-murphy"
+__copyright__ = ("(C) 2023 Yaroshenko Dmytro (https://github.com/o-murphy)",)
+
+__credits__ = ["o-murphy"]
+__version__ = "1.0.0b1"
 
 
 SEARCH_DIR = os.path.dirname(__file__)
@@ -42,10 +56,13 @@ _BUILT_IN_FONTS = (
 
 
 def create_symbols_prefix(filename):
+    """creates prefix for dynamic loaded symbol fonts"""
     try:
         return f"gms-{os.path.splitext(filename)[0].split('-')[-1]}"
-    except Exception:
-        return f"gms-other"
+    # pylint: disable=broad-exception-caught
+    except Exception as exc:
+        print(exc)
+        return "gms-other"
 
 
 _BUILT_IN_SYMBOLS = [
@@ -56,28 +73,9 @@ _BUILT_IN_SYMBOLS = [
     ) for filename in os.listdir(SYMBOLS_DIR) if filename.endswith(".ttf")
 ]
 
-print(_BUILT_IN_SYMBOLS)
-
-# _BUILT_IN_SYMBOLS = (
-#     (
-#         "gms-outlined",
-#         "material-symbols-outlined.ttf",
-#         "charmap.json",
-#     ),
-#     (
-#         "gms-outlined",
-#         "material-symbols-rounded.ttf",
-#         "charmap.json",
-#     ),
-#     (
-#         "gms-outlined",
-#         "material-symbols-sharp.ttf",
-#         "charmap.json",
-#     )
-# )
-
 
 def load(app: QtWidgets.QApplication):
+    """loads fonts and symbols to current QApplication instance"""
     if app == QtWidgets.QApplication.instance():
 
         for symbols in _BUILT_IN_SYMBOLS:
@@ -91,11 +89,13 @@ def run():
     """
     Start the IconBrowser and block until the process exits.
     """
-    app = QtWidgets.QApplication([])
+    app = QtWidgets.QApplication()
     load(app)
     qtawesome.dark(app)
 
     browser = IconBrowser()
+    browser.setWindowTitle('QtMDi Icon Browser')
+    # pylint: disable=protected-access
     browser._comboFont.setCurrentText("gmi")
     browser.show()
     sys.exit(app.exec_())

@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "QtMDi"
+
+authors = [
+    { name="o-murphy", email="thehelixpg@gmail.com" },
+]
+description = "QtMDI (Qt Material Design Icons)"
+readme = "README.md"
+requires-python = ">=3.8"
+keywords = ["pyqt", "pyside", "material-icons", "material-symbols"]
+license = {file = "LICENSE"}
+classifiers = [
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Programming Language :: Python",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: Implementation :: CPython",
+]
+dependencies = ['qtawesome', 'qtpy']
+dynamic = ["version"]
+
+[project.urls]
+"Homepage" = "https://github.com/o-murphy/qtmdi"
+"Bug Reports" = "https://github.com/o-murphy/qtmdi/issues"
+"Source" = "https://github.com/o-murphy/qtmdi"
+
+
+[tool.setuptools]
+py-modules = ["QtMDi"]
+
+[tool.setuptools.packages.find]
+where = ["./src"]
+include = ["qtmdi*"]
+
+
+[tool.setuptools.dynamic]
+version = {attr = "qtmdi.__version__"}
+
+[project.scripts]
+qtmdi-browser = "qtmdi:run"
+
+[project.optional-dependencies]
+dev = ['pylint', 'flake8', 'pytest']
