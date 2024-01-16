@@ -19,11 +19,6 @@ jobs:
       run: |
         sudo apt-get update -y
         sudo apt-get install -y brotli
-    
-    # - name: Checkout Woff2
-    #   uses: actions/checkout@v3
-    #   with:
-    #     repository: google/woff2
 
     - name: Clone Woff2
       run: |
@@ -39,9 +34,9 @@ jobs:
 
     - name: Decompress Woff2 fonts
       run: |
-        woff2_decompress ../material-symbols-outlined.woff2
-        woff2_decompress ../material-symbols-rounded.woff2
-        woff2_decompress ../material-symbols-sharp.woff2
+        ./woff2_decompress ../material-symbols-outlined.woff2
+        ./woff2_decompress ../material-symbols-rounded.woff2
+        ./woff2_decompress ../material-symbols-sharp.woff2
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
