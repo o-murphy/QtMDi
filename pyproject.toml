@@ -40,6 +40,7 @@ dynamic = ["version"]
 
 [tool.setuptools]
 py-modules = ["QtMDi"]
+# include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["./src"]
