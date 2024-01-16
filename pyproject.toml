@@ -6,6 +6,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "QtMDi"
 version = '1.0.0'
+readme = 'README.md'
 authors = [
     { name="o-murphy", email="thehelixpg@gmail.com" },
 ]
@@ -29,7 +30,7 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: CPython",
 ]
 dependencies = ['qtawesome', 'qtpy']
-dynamic = ["version", "readme"]
+# dynamic = ["version", "readme"]
 
 [project.urls]
 "Homepage" = "https://github.com/o-murphy/QtMDi"
@@ -43,9 +44,9 @@ py-modules = ["QtMDi"]
 [tool.setuptools.packages.find]
 where = ["src"]
 
-[tool.setuptools.dynamic]
-version = {attr = "qtmdi.__version__"}
-readme = {file = ["README.md"]}
+# [tool.setuptools.dynamic]
+# version = {attr = "qtmdi.__version__"}
+# readme = {file = ["README.md"]}
 
 [project.scripts]
 qtmdi-browser = "qtmdi:run"
