@@ -34,11 +34,9 @@ jobs:
 
     - name: Decompress Woff2 fonts
       run: |
-        pwd
-        ls
-        #./woff2/woff2_decompress ../material-symbols-outlined.woff2
-        #./woff2/woff2_decompress ../material-symbols-rounded.woff2
-        #./woff2/woff2_decompress ../material-symbols-sharp.woff2
+        ../woff2_decompress ./material-symbols-outlined.woff2
+        ../woff2/woff2_decompress ./material-symbols-rounded.woff2
+        ../woff2/woff2_decompress ./material-symbols-sharp.woff2
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
