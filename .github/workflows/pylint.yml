@@ -20,4 +20,4 @@ jobs:
         pip install pyside6 qtawesome qtpy pylint
     - name: Analysing the code with pylint
       run: |
-        pylint $(git ls-files '*.py')
+        pylint ./src
