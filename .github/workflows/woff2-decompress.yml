@@ -17,7 +17,7 @@ jobs:
     - name: Checkout Woff2
       uses: actions/checkout@v3
       with:
-        repository: "https://github.com/google/woff2"
+        repository: google/woff2
     
     - name: Build Woff2
       run: |
