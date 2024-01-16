@@ -35,15 +35,26 @@ jobs:
         cd woff2
         make clean all
 
+    - name: Initialize npm and install material-symbols
+      run: |
+        cd ./src/gmi/symbols
+        npm init -y
+        npm install material-symbols@latest
+
     - name: Decompress Woff2 fonts
       run: |
-        for file in ./material-symbols/*.woff2; do
+        for file in ./node_modules/material-symbols/*.woff2; do
           ./woff2/woff2_decompress "$file"
         done
+#      run: |
+#        for file in ./material-symbols/*.woff2; do
+#          ./woff2/woff2_decompress "$file"
+#        done
 
     - name: Copy .ttf files to src/gmi/symbols
       run: |
-        cp ./material-symbols/*.ttf ./src/gmi/symbols
+#        cp ./material-symbols/*.ttf ./src/gmi/symbols
+        cp ./node_modules/material-symbols/*.ttf ./src/gmi/symbols
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
