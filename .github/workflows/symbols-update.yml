@@ -61,16 +61,16 @@ jobs:
 #        done
 
 
-    - name: Copy .ttf files to src/gmi/icons
+    - name: Copy .ttf files to src/qtmdi/icons
       run: |
-        cp ./node_modules/material-symbols/*.ttf ./src/gmi/icons
-        cp ./node_modules/@material-symbols/font-100/*.ttf ./src/gmi/icons/100
-        cp ./node_modules/@material-symbols/font-200/*.ttf ./src/gmi/icons/200
-        cp ./node_modules/@material-symbols/font-300/*.ttf ./src/gmi/icons/300
-        cp ./node_modules/@material-symbols/font-400/*.ttf ./src/gmi/icons/400
-        cp ./node_modules/@material-symbols/font-500/*.ttf ./src/gmi/icons/500
-        cp ./node_modules/@material-symbols/font-600/*.ttf ./src/gmi/icons/600
-        cp ./node_modules/@material-symbols/font-700/*.ttf ./src/gmi/icons/700
+        cp ./node_modules/material-symbols/*.ttf ./src/qtmdi/icons
+        cp ./node_modules/@material-symbols/font-100/*.ttf ./src/qtmdi/icons/100
+        cp ./node_modules/@material-symbols/font-200/*.ttf ./src/qtmdi/icons/200
+        cp ./node_modules/@material-symbols/font-300/*.ttf ./src/qtmdi/icons/300
+        cp ./node_modules/@material-symbols/font-400/*.ttf ./src/qtmdi/icons/400
+        cp ./node_modules/@material-symbols/font-500/*.ttf ./src/qtmdi/icons/500
+        cp ./node_modules/@material-symbols/font-600/*.ttf ./src/qtmdi/icons/600
+        cp ./node_modules/@material-symbols/font-700/*.ttf ./src/qtmdi/icons/700
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
@@ -85,7 +85,7 @@ jobs:
       with:
         commit_message: "Scheduled material-symbols update"
         commit_options: "--no-verify"
-        file_pattern: "src/gmi/icons/**/*.ttf"
+        file_pattern: "src/qtmdi/icons/**/*.ttf"
         name: "o-murphy"
         email: "thehelixpg@gmail.com"
         push: true
