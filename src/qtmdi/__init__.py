@@ -10,7 +10,7 @@ from enum import Enum
 
 import qtawesome
 from qtawesome.icon_browser import IconBrowser
-from qtpy import QtWidgets
+from qtpy import QtWidgets, QtCore, QtGui
 
 __author__ = "o-murphy"
 __copyright__ = ("(C) 2023 Yaroshenko Dmytro (https://github.com/o-murphy)",)
@@ -87,57 +87,17 @@ def load(app: QtWidgets.QApplication):
             qtawesome.load_font(*font, FONT_DIR)
 
 
-class Weight(Enum):
-    w100 = 100
-    w200 = 200
-    w300 = 300
-    w400 = 400
-    w500 = 500
-    w600 = 600
-    w700 = 700
-
-
-class Grade(Enum):
-    low = -25
-    mid = 0
-    high = 200
-
-
-class OpticalSize(Enum):
-    o20 = 20
-    o24 = 24
-    o40 = 40
-    o48 = 48
-
-
-class Style(Enum):
-    Outlined = 0
-    Rounded = 1
-    Sharp = 2
-
-
-# def icon(name: str, fill: bool = False,
-#          wght: Weight = Weight.w400,
-#          grad: Grade = Grade.mid,
-#          opsz: OpticalSize = OpticalSize.o24):
-
-
-def icon(*names,
-         # fill: bool = False,
-         wght: Weight = Weight.w400,
-         # grad: Grade = Grade.mid,
-         # opsz: OpticalSize = OpticalSize.o24)
-         **kwargs):
-    return qtawesome.icon(*names, **kwargs)
-
-
 def example():
     class W(QtWidgets.QMainWindow):
         def __init__(self):
             super().__init__()
             self.lt = QtWidgets.QVBoxLayout(self)
             self.btn = QtWidgets.QToolButton(self)
-            self.btn.setIcon(icon("gms-default.search"))
+            self.btn.setIcon(
+                qtawesome.icon("gms-rounded-700.home_filled"),
+            )
+            self.btn.setFixedSize(QtCore.QSize(48, 48))
+            self.btn.setIconSize(QtCore.QSize(32, 32))
             self.lt.addWidget(self.btn)
 
     app = QtWidgets.QApplication()
@@ -167,5 +127,3 @@ def run():
 if __name__ == '__main__':
     run()
     # example()
-
-
