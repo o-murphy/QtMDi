@@ -1,3 +1,4 @@
+# pylint: disable=invalid-name
 """
 Hook for PyInstaller
 collects package data if PyInstaller packaging requires celpy
