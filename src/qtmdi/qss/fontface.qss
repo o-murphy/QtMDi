@@ -1,4 +1,0 @@
-@font-face {
-    font-family: MaterialSymbolsSharp;
-    src: url(":/qtmdi/icons/default/material-symbols-sharp.ttf");
-}
