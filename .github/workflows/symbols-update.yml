@@ -56,10 +56,6 @@ jobs:
         find ./node_modules -type f -name "*.woff2" -print0 | while IFS= read -r -d '' file; do
           ./woff2/woff2_decompress "$file"
         done
-#        for file in ./node_modules/material-symbols/*.woff2; do
-#          ./woff2/woff2_decompress "$file"
-#        done
-
 
     - name: Copy .ttf files to src/qtmdi/icons
       run: |
@@ -70,7 +66,7 @@ jobs:
         mkdir -p ./src/qtmdi/icons/500
         mkdir -p ./src/qtmdi/icons/600
         mkdir -p ./src/qtmdi/icons/700
-        cp ./node_modules/material-symbols/*.ttf ./src/qtmdi/icons
+        cp ./node_modules/material-symbols/*.ttf ./src/qtmdi/icons/default
         cp ./node_modules/@material-symbols/font-100/*.ttf ./src/qtmdi/icons/100
         cp ./node_modules/@material-symbols/font-200/*.ttf ./src/qtmdi/icons/200
         cp ./node_modules/@material-symbols/font-300/*.ttf ./src/qtmdi/icons/300

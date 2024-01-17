@@ -4,15 +4,13 @@ qtawesome extension with the latest variable icon fonts for Material Symbols (Py
 (C) 2023 Yaroshenko Dmytro (https://github.com/o-murphy)
 """
 
-
 import os
 import sys
-
-from qtawesome.icon_browser import IconBrowser
-from qtpy import QtWidgets
+from enum import Enum
 
 import qtawesome
-
+from qtawesome.icon_browser import IconBrowser
+from qtpy import QtWidgets
 
 __author__ = "o-murphy"
 __copyright__ = ("(C) 2023 Yaroshenko Dmytro (https://github.com/o-murphy)",)
@@ -24,7 +22,6 @@ __credits__ = ["o-murphy"]
 SEARCH_DIR = os.path.dirname(__file__)
 FONT_DIR = os.path.join(SEARCH_DIR, 'fonts')
 SYMBOLS_DIR = os.path.join(SEARCH_DIR, 'icons')
-
 
 _BUILT_IN_FONTS = (
     (
@@ -55,7 +52,7 @@ _BUILT_IN_FONTS = (
 )
 
 
-def create_symbols_prefix(filename):
+def _create_symbols_prefix(filename):
     """creates prefix for dynamic loaded symbol fonts"""
     try:
         return f"gms-{os.path.splitext(filename)[0].split('-')[-1]}"
@@ -65,24 +62,90 @@ def create_symbols_prefix(filename):
         return "gms-other"
 
 
-_BUILT_IN_SYMBOLS = [
-    (
-        create_symbols_prefix(filename),
-        filename,
-        "charmap.json",
-    ) for filename in os.listdir(SYMBOLS_DIR) if filename.endswith(".ttf")
-]
+def _look_for_fonts():
+    fonts = []
+    for root, dirs, files in os.walk(SYMBOLS_DIR):
+        path = root.split(os.sep)
+        for file in files:
+            if os.path.splitext(file)[1] == ".ttf":
+                # filepath = os.path.join(root, file)
+                prefix = f"{_create_symbols_prefix(file)}-{path[-1]}"
+                fonts.append(
+                    (prefix, file, "../charmap.json", root)
+                )
+    return fonts
 
 
 def load(app: QtWidgets.QApplication):
     """loads fonts and symbols to current QApplication instance"""
     if app == QtWidgets.QApplication.instance():
 
-        for symbols in _BUILT_IN_SYMBOLS:
-            qtawesome.load_font(*symbols, SYMBOLS_DIR)
+        for symbols in _look_for_fonts():
+            qtawesome.load_font(*symbols)
 
         for font in _BUILT_IN_FONTS:
             qtawesome.load_font(*font, FONT_DIR)
+
+
+class Weight(Enum):
+    w100 = 100
+    w200 = 200
+    w300 = 300
+    w400 = 400
+    w500 = 500
+    w600 = 600
+    w700 = 700
+
+
+class Grade(Enum):
+    low = -25
+    mid = 0
+    high = 200
+
+
+class OpticalSize(Enum):
+    o20 = 20
+    o24 = 24
+    o40 = 40
+    o48 = 48
+
+
+class Style(Enum):
+    Outlined = 0
+    Rounded = 1
+    Sharp = 2
+
+
+# def icon(name: str, fill: bool = False,
+#          wght: Weight = Weight.w400,
+#          grad: Grade = Grade.mid,
+#          opsz: OpticalSize = OpticalSize.o24):
+
+
+def icon(*names,
+         # fill: bool = False,
+         wght: Weight = Weight.w400,
+         # grad: Grade = Grade.mid,
+         # opsz: OpticalSize = OpticalSize.o24)
+         **kwargs):
+    return qtawesome.icon(*names, **kwargs)
+
+
+def example():
+    class W(QtWidgets.QMainWindow):
+        def __init__(self):
+            super().__init__()
+            self.lt = QtWidgets.QVBoxLayout(self)
+            self.btn = QtWidgets.QToolButton(self)
+            self.btn.setIcon(icon("gms-default.search"))
+            self.lt.addWidget(self.btn)
+
+    app = QtWidgets.QApplication()
+    load(app)
+    qtawesome.dark(app)
+    w = W()
+    w.show()
+    sys.exit(app.exec_())
 
 
 def run():
@@ -103,3 +166,6 @@ def run():
 
 if __name__ == '__main__':
     run()
+    # example()
+
+
