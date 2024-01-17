@@ -39,6 +39,13 @@ jobs:
       run: |
         npm init -y
         npm install material-symbols@latest
+        npm install @material-symbols/font-100@latest
+        npm install @material-symbols/font-200@latest
+        npm install @material-symbols/font-300@latest
+        npm install @material-symbols/font-400@latest
+        npm install @material-symbols/font-500@latest
+        npm install @material-symbols/font-600@latest
+        npm install @material-symbols/font-700@latest
 
     - name: Show files
       run: |
@@ -46,26 +53,42 @@ jobs:
 
     - name: Decompress Woff2 Fonts
       run: |
-        for file in ./node_modules/material-symbols/*.woff2; do
+        find ./node_modules -type f -name "*.woff2" -print0 | while IFS= read -r -d '' file; do
           ./woff2/woff2_decompress "$file"
         done
 
-    - name: Copy .ttf files to src/gmi/symbols
+    - name: Copy .ttf files to src/qtmdi/icons
       run: |
-        cp ./node_modules/material-symbols/*.ttf ./src/gmi/symbols
+        mkdir -p ./src/qtmdi/icons/100
+        mkdir -p ./src/qtmdi/icons/200
+        mkdir -p ./src/qtmdi/icons/300
+        mkdir -p ./src/qtmdi/icons/400
+        mkdir -p ./src/qtmdi/icons/500
+        mkdir -p ./src/qtmdi/icons/600
+        mkdir -p ./src/qtmdi/icons/700
+        cp ./node_modules/material-symbols/*.ttf ./src/qtmdi/icons/default
+        cp ./node_modules/@material-symbols/font-100/*.ttf ./src/qtmdi/icons/100
+        cp ./node_modules/@material-symbols/font-200/*.ttf ./src/qtmdi/icons/200
+        cp ./node_modules/@material-symbols/font-300/*.ttf ./src/qtmdi/icons/300
+        cp ./node_modules/@material-symbols/font-400/*.ttf ./src/qtmdi/icons/400
+        cp ./node_modules/@material-symbols/font-500/*.ttf ./src/qtmdi/icons/500
+        cp ./node_modules/@material-symbols/font-600/*.ttf ./src/qtmdi/icons/600
+        cp ./node_modules/@material-symbols/font-700/*.ttf ./src/qtmdi/icons/700
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
       with:
         name: ttf
-        path: ./node_modules/material-symbols/*.tff
+        path: |
+          ./node_modules/material-symbols/*.tff
+          ./node_modules/@material-symbols/**/*.ttf
 
     - name: Commit and Push Changes
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
         commit_message: "Scheduled material-symbols update"
         commit_options: "--no-verify"
-        file_pattern: "src/gmi/symbols/*.ttf"
+        file_pattern: "src/qtmdi/icons/**/*.ttf"
         name: "o-murphy"
         email: "thehelixpg@gmail.com"
         push: true
