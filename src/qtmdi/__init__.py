@@ -22,8 +22,8 @@ __credits__ = ["o-murphy"]
 
 
 SEARCH_DIR = os.path.dirname(__file__)
-FONT_DIR = os.path.join(SEARCH_DIR, 'font')
-SYMBOLS_DIR = os.path.join(SEARCH_DIR, 'symbols')
+FONT_DIR = os.path.join(SEARCH_DIR, 'fonts')
+SYMBOLS_DIR = os.path.join(SEARCH_DIR, 'icons')
 
 
 _BUILT_IN_FONTS = (
