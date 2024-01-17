@@ -51,5 +51,8 @@ where = ["src"]
 [project.scripts]
 qtmdi-browser = "qtmdi:run"
 
+[project.entry-points.pyinstaller40]
+hook-dirs = "qtmdi.__pyinstaller:get_hook_dirs"
+
 [project.optional-dependencies]
 dev = ['pylint', 'flake8', 'pytest', 'bump2version']
