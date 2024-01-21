@@ -1,0 +1,139 @@
+name: Auto Material Symbols Fonts Update
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    - cron: '30 1 * * *'  # Runs at 01:30 UTC every day
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      # Give the default GITHUB_TOKEN write permission to commit and push the changed files back to the repository.
+      contents: write
+
+    strategy:
+      fail-fast: false
+
+
+    steps:
+
+    - name: Checkout curent repo
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.head_ref }}
+
+#    - name: Clone Woff2
+#      run: |
+#        git clone --recursive https://github.com/google/woff2.git
+#
+#    - name: Build Woff2
+#      run: |
+#        cd woff2
+#        make clean all
+#
+#    - name: Initialize npm and install material-symbols
+#      run: |
+#        npm init -y
+#        npm install material-symbols@latest
+#        npm install @material-symbols/font-100@latest
+#        npm install @material-symbols/font-200@latest
+#        npm install @material-symbols/font-300@latest
+#        npm install @material-symbols/font-400@latest
+#        npm install @material-symbols/font-500@latest
+#        npm install @material-symbols/font-600@latest
+#        npm install @material-symbols/font-700@latest
+#
+#    - name: Show files
+#      run: |
+#        ls
+#
+#    - name: Decompress Woff2 Fonts
+#      run: |
+#        find ./node_modules -type f -name "*.woff2" -print0 | while IFS= read -r -d '' file; do
+#          ./woff2/woff2_decompress "$file"
+#        done
+#
+#    - name: Copy .ttf files to src/qtmdi/icons
+#      run: |
+#        mkdir -p ./src/qtmdi/icons/base
+#        mkdir -p ./src/qtmdi/icons/100
+#        mkdir -p ./src/qtmdi/icons/200
+#        mkdir -p ./src/qtmdi/icons/300
+#        mkdir -p ./src/qtmdi/icons/400
+#        mkdir -p ./src/qtmdi/icons/500
+#        mkdir -p ./src/qtmdi/icons/600
+#        mkdir -p ./src/qtmdi/icons/700
+#        cp ./node_modules/material-symbols/*.ttf ./src/qtmdi/icons/base
+#        cp ./node_modules/@material-symbols/font-100/*.ttf ./src/qtmdi/icons/100
+#        cp ./node_modules/@material-symbols/font-200/*.ttf ./src/qtmdi/icons/200
+#        cp ./node_modules/@material-symbols/font-300/*.ttf ./src/qtmdi/icons/300
+#        cp ./node_modules/@material-symbols/font-400/*.ttf ./src/qtmdi/icons/400
+#        cp ./node_modules/@material-symbols/font-500/*.ttf ./src/qtmdi/icons/500
+#        cp ./node_modules/@material-symbols/font-600/*.ttf ./src/qtmdi/icons/600
+#        cp ./node_modules/@material-symbols/font-700/*.ttf ./src/qtmdi/icons/700
+#
+#    - name: Upload Artifacts
+#      uses: actions/upload-artifact@v2
+#      with:
+#        name: ttf
+#        path: |
+#          ./node_modules/material-symbols/*.tff
+#          ./node_modules/@material-symbols/**/*.ttf
+
+    - name: Create test file
+      run: |
+        cp ./src/qtmdi/icons/charmap.json ./src/qtmdi/icons/charmap-temp.json 
+
+    - name: Check for Updates in Icons
+      id: check_updates
+      run: |
+        # Add changes to the staging area
+        git add ./src/qtmdi/icons
+    
+        # Check if there are any changes
+        git diff --staged --quiet
+        STATUS=$?
+    
+        if [ $STATUS -eq 0 ]; then
+          echo "No updates found."
+          echo "updated=false" >> $GITHUB_ENV
+        else
+          echo "Updates found."
+          echo "updated=true" >> $GITHUB_ENV
+        fi
+
+    - name: On Update
+      id: on_update
+      if: env.updated == 'true'
+      run: |
+        echo status ${{env.update}}
+
+    - name: Install Python
+      id: install_python
+      if: env.updated == 'true'
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x' # Replace '3.x' with the specific version you need
+
+    - name: Bump Version
+      id: bump2version
+      if: env.updated == 'true'
+      run: |
+        cat .bumpversion.cfg
+        python -m pip install bump2version
+        bump2version patch
+        cat .bumpversion.cfg
+
+#    - name: Commit and Push Changes
+#      uses: stefanzweifel/git-auto-commit-action@v4
+#      with:
+#        commit_message: "Scheduled material-symbols update"
+#        commit_options: "--no-verify"
+#        file_pattern: "src/qtmdi/icons/**/*.ttf"
+#        name: "o-murphy"
+#        email: "thehelixpg@gmail.com"
+#        push: true
