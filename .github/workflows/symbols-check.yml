@@ -24,7 +24,6 @@ jobs:
     - name: Checkout current repo
       uses: actions/checkout@v4
       with:
-        persist-credentials: false
         ref: ${{ github.head_ref }}
 
 #    - name: Clone Woff2
@@ -111,17 +110,6 @@ jobs:
       run: |
         echo status ${{env.update}}
 
-    - name: Commit and Push Changes
-      id: commit
-      uses: stefanzweifel/git-auto-commit-action@v5
-      with:
-        commit_message: "Scheduled material-symbols update"
-        commit_options: "--no-verify"
-        file_pattern: "src/qtmdi/icons/**/*.ttf"
-        name: "o-murphy"
-        email: "thehelixpg@gmail.com"
-        push: false
-
     - name: Install Python
       id: install_python
       if: env.updated == 'true'
@@ -135,20 +123,8 @@ jobs:
       run: |
         cat .bumpversion.cfg
         python -m pip install bump2version
-        bump2version patch
+        bump2version patch --allow-dirty
         cat .bumpversion.cfg
-
-    - name: current_version
-      run: echo "current_version=$(grep '# version' version.md | cut -d ' ' -f3)" >> $GITHUB_ENV
-    - name: FragileTech/bump-version
-      uses: FragileTech/bump-version@main
-      with:
-        current_version: "${{ env.current_version }}"
-        files: version.md
-        commit_name: Your Company Bot
-        commit_email: bot@your-company.com
-        login: your-bot-login
-        token: "${{ secrets.BOT_TOKEN }}"
 
     - name: Commit and Push Changes
       id: commit2
@@ -157,7 +133,7 @@ jobs:
       with:
         commit_message: "Scheduled material-symbols update"
         commit_options: "--no-verify"
-        file_pattern: ".bumpversion.cfg pyproject.toml"
+        file_pattern: ".bumpversion.cfg pyproject.toml src/qtmdi/icons/**/*.ttf"
         name: "o-murphy"
         email: "thehelixpg@gmail.com"
         push: true
