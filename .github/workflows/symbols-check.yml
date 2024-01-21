@@ -1,4 +1,4 @@
-name: Auto Material Symbols Fonts Update
+name: Auto Update Debug
 
 on:
   workflow_dispatch:
@@ -110,6 +110,16 @@ jobs:
       run: |
         echo status ${{env.update}}
 
+    - name: Commit and Push Changes
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: "Scheduled material-symbols update"
+        commit_options: "--no-verify"
+        file_pattern: "src/qtmdi/icons/**/*.ttf"
+        name: "o-murphy"
+        email: "thehelixpg@gmail.com"
+        push: false
+
     - name: Install Python
       id: install_python
       if: env.updated == 'true'
@@ -123,15 +133,11 @@ jobs:
       run: |
         cat .bumpversion.cfg
         python -m pip install bump2version
+        git commit -m "auto update"
         bump2version patch
         cat .bumpversion.cfg
 
-#    - name: Commit and Push Changes
-#      uses: stefanzweifel/git-auto-commit-action@v4
-#      with:
-#        commit_message: "Scheduled material-symbols update"
-#        commit_options: "--no-verify"
-#        file_pattern: "src/qtmdi/icons/**/*.ttf"
-#        name: "o-murphy"
-#        email: "thehelixpg@gmail.com"
-#        push: true
+    - name: Push Changes
+      run: |
+        git push
+        git push --tags
