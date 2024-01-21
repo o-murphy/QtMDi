@@ -107,7 +107,7 @@ jobs:
     - name: Check state
       id: on_update
       run: |
-        echo status ${{env.update}}
+        echo status ${{env.updated}}
         git config --global user.email "thehelixpg@gmail.com"
         git config --global user.name "o-murphy"
 
