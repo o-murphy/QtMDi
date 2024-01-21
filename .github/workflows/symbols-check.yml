@@ -88,19 +88,34 @@ jobs:
       run: |
         cp ./src/qtmdi/icons/charmap.json ./src/qtmdi/icons/charmap-temp.json 
 
+#    - name: Check for Updates in Icons
+#      run: |
+#        # Add changes to the staging area
+#        git add ./src/qtmdi/icons
+#
+#        # Check if there are any changes
+#        # Prevent the workflow from failing by using a shell conditional
+#        if git diff --staged --quiet; then
+#          echo "No updates found."
+#          echo "updated=false" >> $GITHUB_ENV
+#        else
+#          echo "Updates found."
+#          echo "updated=true" >> $GITHUB_ENV
+#        fi
+#      shell: /usr/bin/bash -e {0}
+
     - name: Check for Updates in Icons
       run: |
         # Add changes to the staging area
         git add ./src/qtmdi/icons
-      
-        # Check if there are any changes
-        # Prevent the workflow from failing by using a shell conditional
-        if git diff --staged; then
-          echo "No updates found."
-          echo "updated=false" >> $GITHUB_ENV
-        else
+    
+        # Use git status and grep to check for changes
+        if git status | grep -q 'src/qtmdi/icons'; then
           echo "Updates found."
           echo "updated=true" >> $GITHUB_ENV
+        else
+          echo "No updates found."
+          echo "updated=false" >> $GITHUB_ENV
         fi
       shell: /usr/bin/bash -e {0}
 
