@@ -109,6 +109,8 @@ jobs:
       if: env.updated == 'true'
       run: |
         echo status ${{env.update}}
+        git config --global user.email "thehelixpg@gmail.com"
+        git config --global user.name "o-murphy"
 
     - name: Install Python
       id: install_python
