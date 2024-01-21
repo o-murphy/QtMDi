@@ -104,8 +104,7 @@ jobs:
         fi
       shell: /usr/bin/bash -e {0}
 
-    - name: On Update
-      id: on_update
+    - name: Check state
       if: env.updated == 'true'
       run: |
         echo status ${{env.update}}
