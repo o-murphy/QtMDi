@@ -95,7 +95,7 @@ jobs:
       
         # Check if there are any changes
         # Prevent the workflow from failing by using a shell conditional
-        if git diff --staged --quiet; then
+        if git diff --staged; then
           echo "No updates found."
           echo "updated=false" >> $GITHUB_ENV
         else
