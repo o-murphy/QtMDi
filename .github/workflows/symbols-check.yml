@@ -89,22 +89,20 @@ jobs:
         cp ./src/qtmdi/icons/charmap.json ./src/qtmdi/icons/charmap-temp.json 
 
     - name: Check for Updates in Icons
-      id: check_updates
       run: |
         # Add changes to the staging area
         git add ./src/qtmdi/icons
-    
+      
         # Check if there are any changes
-        git diff --staged --quiet
-        STATUS=$?
-    
-        if [ $STATUS -eq 0 ]; then
+        # Prevent the workflow from failing by using a shell conditional
+        if git diff --staged --quiet; then
           echo "No updates found."
           echo "updated=false" >> $GITHUB_ENV
         else
           echo "Updates found."
           echo "updated=true" >> $GITHUB_ENV
         fi
+      shell: /usr/bin/bash -e {0}
 
     - name: On Update
       id: on_update
