@@ -148,11 +148,17 @@ jobs:
       run: |
         git status
 
-    - name: Commit and Push Changes
-      id: commit2
-      if: env.updated == 'true'
-      uses: stefanzweifel/git-auto-commit-action@v5
+#    - name: Commit and Push Changes
+#      id: commit2
+#      if: env.updated == 'true'
+#      uses: stefanzweifel/git-auto-commit-action@v5
+#      with:
+#        commit_message: "Scheduled material-symbols update"
+#        commit_options: "--no-verify"
+#        file_pattern: ".bumpversion.cfg pyproject.toml src/qtmdi/icons/**/*.ttf"
+
+    - name: Push changes
+      uses: ad-m/github-push-action@master
       with:
-        commit_message: "Scheduled material-symbols update"
-        commit_options: "--no-verify"
-        file_pattern: ".bumpversion.cfg pyproject.toml src/qtmdi/icons/**/*.ttf"
+        github_token: ${{ secrets.GH_TOKEN }}
+        branch: ${{ github.ref }}
