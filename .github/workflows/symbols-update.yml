@@ -1,10 +1,10 @@
-name: Material Symbols Fonts Update
+name: Auto Material Symbols Fonts Update
 
 on:
   workflow_dispatch:
 
   schedule:
-    - cron: '0 0 * * 0'  # Run every Sunday at midnight
+    - cron: '30 1 * * *'  # Runs at 01:30 UTC every day
 
 jobs:
   build:
@@ -59,6 +59,7 @@ jobs:
 
     - name: Copy .ttf files to src/qtmdi/icons
       run: |
+        mkdir -p ./src/qtmdi/icons/base
         mkdir -p ./src/qtmdi/icons/100
         mkdir -p ./src/qtmdi/icons/200
         mkdir -p ./src/qtmdi/icons/300
@@ -66,7 +67,7 @@ jobs:
         mkdir -p ./src/qtmdi/icons/500
         mkdir -p ./src/qtmdi/icons/600
         mkdir -p ./src/qtmdi/icons/700
-        cp ./node_modules/material-symbols/*.ttf ./src/qtmdi/icons/default
+        cp ./node_modules/material-symbols/*.ttf ./src/qtmdi/icons/base
         cp ./node_modules/@material-symbols/font-100/*.ttf ./src/qtmdi/icons/100
         cp ./node_modules/@material-symbols/font-200/*.ttf ./src/qtmdi/icons/200
         cp ./node_modules/@material-symbols/font-300/*.ttf ./src/qtmdi/icons/300
