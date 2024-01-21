@@ -142,6 +142,12 @@ jobs:
         bump2version patch --allow-dirty
         cat .bumpversion.cfg
 
+    - name: Check state
+      id: on_update
+      if: env.updated == 'true'
+      run: |
+        git status
+
     - name: Commit and Push Changes
       id: commit2
       if: env.updated == 'true'
@@ -150,6 +156,3 @@ jobs:
         commit_message: "Scheduled material-symbols update"
         commit_options: "--no-verify"
         file_pattern: ".bumpversion.cfg pyproject.toml src/qtmdi/icons/**/*.ttf"
-        name: "o-murphy"
-        email: "thehelixpg@gmail.com"
-        push: true
