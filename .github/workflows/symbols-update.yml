@@ -26,14 +26,18 @@ jobs:
       with:
         ref: ${{ github.head_ref }}
 
-    - name: Clone Woff2
-      run: |
-        git clone --recursive https://github.com/google/woff2.git
-        
-    - name: Build Woff2
-      run: |
-        cd woff2
-        make clean all
+    - name: Install Woff2
+      run : |
+        sudo apt install woff2
+
+#    - name: Clone Woff2
+#      run: |
+#        git clone --recursive https://github.com/google/woff2.git
+#
+#    - name: Build Woff2
+#      run: |
+#        cd woff2
+#        make clean all
 
     - name: Initialize npm and install material-symbols
       run: |
@@ -51,10 +55,16 @@ jobs:
       run: |
         ls
 
+#    - name: Decompress Woff2 Fonts
+#      run: |
+#        find ./node_modules -type f -name "*.woff2" -print0 | while IFS= read -r -d '' file; do
+#          ./woff2/woff2_decompress "$file"
+#        done
+
     - name: Decompress Woff2 Fonts
       run: |
         find ./node_modules -type f -name "*.woff2" -print0 | while IFS= read -r -d '' file; do
-          ./woff2/woff2_decompress "$file"
+          woff2_decompress "$file"
         done
 
     - name: Copy .ttf files to src/qtmdi/icons
@@ -105,7 +115,7 @@ jobs:
 
     - name: Install Python
       id: install_python
-      if: env.updated == 'true'
+      if: steps.check_changes.outputs.changes_made == 'true'
       uses: actions/setup-python@v2
       with:
         python-version: '3.x' # Replace '3.x' with the specific version you need
