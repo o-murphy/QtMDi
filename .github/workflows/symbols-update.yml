@@ -1,4 +1,4 @@
-name: Auto Material Symbols Fonts Update
+name: Auto Fonts Update & Release
 
 on:
   workflow_dispatch:
