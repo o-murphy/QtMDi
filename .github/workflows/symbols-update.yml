@@ -93,3 +93,26 @@ jobs:
         name: "o-murphy"
         email: "thehelixpg@gmail.com"
         push: true
+
+    - name: Check if changes were committed
+      id: check_changes
+      run: |
+        if git log -1 --pretty=%B | grep -q "Scheduled material-symbols update"; then
+          echo "changes_made=true" >> $GITHUB_OUTPUT
+        else
+          echo "changes_made=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Install Python
+      id: install_python
+      if: env.updated == 'true'
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x' # Replace '3.x' with the specific version you need
+
+    - name: Bump version
+      if: steps.check_changes.outputs.changes_made == 'true'
+      run: |
+        python -m pip install --update bump2version 
+        bump2version patch --allow-dirty
+        cat ./pyproject.toml        
