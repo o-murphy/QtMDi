@@ -1,6 +1,6 @@
 # QtMDi (Qt Material Design icons)
 
-[![license](https://img.shields.io/pypi/l/QtMDi)](./LICENSE)
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://opensource.org/licenses/MIT)
 [![pypi version](https://img.shields.io/pypi/v/QtMDi)](https://pypi.org/project/QtMDi/)
 
 *Copyright 2023 Yaroshenko Dmytro (https://github.com/o-murphy)*
