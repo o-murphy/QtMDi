@@ -110,7 +110,7 @@ jobs:
       with:
         python-version: '3.x' # Replace '3.x' with the specific version you need
 
-    - name Configure git user:
+    - name: Configure git user
       if: steps.check_changes.outputs.changes_made == 'true'
       run: |
         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
