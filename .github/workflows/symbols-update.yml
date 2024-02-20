@@ -86,9 +86,9 @@ jobs:
       id: check_changes
       run: |
         if git log -1 --pretty=%B | grep -q "Scheduled material-symbols update"; then
-          echo "changes_made=false" >> $GITHUB_OUTPUT
-        else
           echo "changes_made=true" >> $GITHUB_OUTPUT
+        else
+          echo "changes_made=false" >> $GITHUB_OUTPUT
         fi
 
     - name: Install Python
