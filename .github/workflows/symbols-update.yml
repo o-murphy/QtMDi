@@ -113,6 +113,6 @@ jobs:
     - name: Bump version
       if: steps.check_changes.outputs.changes_made == 'true'
       run: |
-        python -m pip install --update bump2version 
+        python -m pip install --upgrade bump2version 
         bump2version patch --allow-dirty
         cat ./pyproject.toml        
