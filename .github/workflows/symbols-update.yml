@@ -26,15 +26,6 @@ jobs:
       with:
         ref: ${{ github.head_ref }}
 
-#    - name: Clone Woff2
-#      run: |
-#        git clone --recursive https://github.com/google/woff2.git
-#
-#    - name: Build Woff2
-#      run: |
-#        cd woff2
-#        make clean all
-
     - name: Initialize npm and install material-symbols
       run: |
         npm init -y
@@ -46,16 +37,6 @@ jobs:
         npm install @material-symbols/font-500@latest
         npm install @material-symbols/font-600@latest
         npm install @material-symbols/font-700@latest
-
-    - name: Show files
-      run: |
-        ls
-
-#    - name: Decompress Woff2 Fonts
-#      run: |
-#        find ./node_modules -type f -name "*.woff2" -print0 | while IFS= read -r -d '' file; do
-#          ./woff2/woff2_decompress "$file"
-#        done
 
     - name: Install Woff2
       run : |
@@ -95,14 +76,11 @@ jobs:
           ./node_modules/@material-symbols/**/*.ttf
 
     - name: Commit and Push Changes (Fonts update)
-      uses: stefanzweifel/git-auto-commit-action@v4
+      uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: "Scheduled material-symbols update"
         commit_options: "--no-verify"
         file_pattern: "src/qtmdi/icons/**/*.ttf"
-        name: "github-actions[bot]"
-        email: "41898282+github-actions[bot]@users.noreply.github.com"
-        push: true
 
     - name: Check if changes were committed
       id: check_changes
@@ -154,6 +132,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       with:
         tag_name: v${{ env.VERSION }}
-        release_name: Release v${{ env.VERSION }}
+        release_name: v${{ env.VERSION }}
         draft: true
         prerelease: false
