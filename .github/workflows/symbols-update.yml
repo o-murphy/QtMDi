@@ -123,12 +123,14 @@ jobs:
         bump2version patch --allow-dirty
 
     - name: Push version to current branch
+      if: steps.check_changes.outputs.changes_made == 'true'
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GH_TOKEN }}
         branch: ${{ github.ref }}
 
     - name: Extract Version
+      if: steps.check_changes.outputs.changes_made == 'true'
       id: extract_version
       run: |
         VERSION=$(python -c "import toml; print(toml.load('pyproject.toml')['project']['version'])")
