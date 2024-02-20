@@ -12,7 +12,7 @@
 > Fonts in this package automatically updated, so it will always have the latest icons from Google
 
 > [!NOTE]
-> The package isn't publishing to PyPi automatically, so see the [installation](#installation) for details
+> The package is publishing to PyPi automatically, so it can have issues in some releases
 
 > [!NOTE]
 > The package uses [QtAwesome](https://github.com/spyder-ide/qtawesome) as it's backend,

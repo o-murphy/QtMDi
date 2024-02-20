@@ -1,4 +1,4 @@
-name: Auto Material Symbols Fonts Update
+name: Auto Fonts Update & Release
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ on:
     - cron: '30 1 * * *'  # Runs at 01:30 UTC every day
 
 jobs:
-  build:
+  build-n-release:
 
     runs-on: ubuntu-latest
     
@@ -26,15 +26,6 @@ jobs:
       with:
         ref: ${{ github.head_ref }}
 
-    - name: Clone Woff2
-      run: |
-        git clone --recursive https://github.com/google/woff2.git
-        
-    - name: Build Woff2
-      run: |
-        cd woff2
-        make clean all
-
     - name: Initialize npm and install material-symbols
       run: |
         npm init -y
@@ -47,14 +38,14 @@ jobs:
         npm install @material-symbols/font-600@latest
         npm install @material-symbols/font-700@latest
 
-    - name: Show files
-      run: |
-        ls
+    - name: Install Woff2
+      run : |
+        sudo apt install woff2
 
     - name: Decompress Woff2 Fonts
       run: |
         find ./node_modules -type f -name "*.woff2" -print0 | while IFS= read -r -d '' file; do
-          ./woff2/woff2_decompress "$file"
+          woff2_decompress "$file"
         done
 
     - name: Copy .ttf files to src/qtmdi/icons
@@ -84,12 +75,63 @@ jobs:
           ./node_modules/material-symbols/*.tff
           ./node_modules/@material-symbols/**/*.ttf
 
-    - name: Commit and Push Changes
-      uses: stefanzweifel/git-auto-commit-action@v4
+    - name: Commit and Push Changes (Fonts update)
+      uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: "Scheduled material-symbols update"
         commit_options: "--no-verify"
         file_pattern: "src/qtmdi/icons/**/*.ttf"
-        name: "o-murphy"
-        email: "thehelixpg@gmail.com"
-        push: true
+
+    - name: Check if changes were committed
+      id: check_changes
+      run: |
+        if git log -1 --pretty=%B | grep -q "Scheduled material-symbols update"; then
+          echo "changes_made=true" >> $GITHUB_OUTPUT
+        else
+          echo "changes_made=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Install Python
+      id: install_python
+      if: steps.check_changes.outputs.changes_made == 'true'
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x' # Replace '3.x' with the specific version you need
+
+    - name: Configure git user
+      if: steps.check_changes.outputs.changes_made == 'true'
+      run: |
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+
+    - name: Bump version
+      if: steps.check_changes.outputs.changes_made == 'true'
+      run: |
+        python -m pip install --upgrade bump2version toml
+        bump2version patch --allow-dirty
+
+    - name: Push version to current branch
+      if: steps.check_changes.outputs.changes_made == 'true'
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GH_TOKEN }}
+        branch: ${{ github.ref }}
+
+    - name: Extract Version
+      if: steps.check_changes.outputs.changes_made == 'true'
+      id: extract_version
+      run: |
+        VERSION=$(python -c "import toml; print(toml.load('pyproject.toml')['project']['version'])")
+        echo "Extracted version is $VERSION"
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+    - name: Create Release
+      if: steps.check_changes.outputs.changes_made == 'true'
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      with:
+        tag_name: v${{ env.VERSION }}
+        release_name: v${{ env.VERSION }}
+        draft: false
+        prerelease: false
