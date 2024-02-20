@@ -155,4 +155,4 @@ jobs:
         release_name: Release v${{ env.VERSION }}
         draft: true
         prerelease: false
-        github_token: ${{ secrets.GH_TOKEN }}
+#        github_token: ${{ secrets.GH_TOKEN }}
