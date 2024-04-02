@@ -68,7 +68,7 @@ jobs:
         cp ./node_modules/@material-symbols/font-700/*.ttf ./src/qtmdi/icons/700
 
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: ttf
         path: |
