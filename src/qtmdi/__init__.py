@@ -78,12 +78,11 @@ def load(app: QtWidgets.QApplication):
 
         for font in _BUILT_IN_FONTS:
             qtawesome.load_font(*font, FONT_DIR)
-
 def run():
     """
     Start the IconBrowser and block until the process exits.
     """
-    app = QtWidgets.QApplication()
+    app = QtWidgets.QApplication(sys.argv)
     load(app)
     qtawesome.dark(app)
 
