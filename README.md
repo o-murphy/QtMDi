@@ -1,3 +1,10 @@
+[![SWUbanner]][SWUdocs]
+
+[SWUbanner]:
+https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner-direct-single.svg
+[SWUdocs]:
+https://github.com/vshymanskyy/StandWithUkraine/blob/main/docs/README.md
+
 # QtMDi (Qt Material Design icons)
 
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://opensource.org/licenses/MIT)
