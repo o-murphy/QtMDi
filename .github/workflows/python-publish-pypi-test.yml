@@ -18,6 +18,11 @@ jobs:
   deploy:
 
     runs-on: ubuntu-latest
+    # Specifying a GitHub environment is optional, but strongly encouraged
+    environment: prerelease
+    permissions:
+      # IMPORTANT: this permission is mandatory for trusted publishing
+      id-token: write
 
     steps:
     - uses: actions/checkout@v4
@@ -46,6 +51,5 @@ jobs:
     - name: Publish package to TestPyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
-        user: __token__
-        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+        skip-existing: true
         repository-url: https://test.pypi.org/legacy/
