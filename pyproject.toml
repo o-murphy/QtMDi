@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "QtMDi"
-version = '1.1.25'
+version = '1.1.26'
 readme = 'README.md'
 authors = [
     { name="o-murphy", email="thehelixpg@gmail.com" },
