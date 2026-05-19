@@ -22,7 +22,7 @@ jobs:
     steps:
 
     - name: Checkout curent repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         ref: ${{ github.head_ref }}
 
@@ -68,7 +68,7 @@ jobs:
         cp ./node_modules/@material-symbols/font-700/*.ttf ./src/qtmdi/icons/700
 
     - name: Upload Artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: ttf
         path: |
