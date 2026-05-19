@@ -94,7 +94,7 @@ jobs:
     - name: Install Python
       id: install_python
       if: steps.check_changes.outputs.changes_made == 'true'
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v6
       with:
         python-version: '3.x' # Replace '3.x' with the specific version you need
 
