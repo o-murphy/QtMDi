@@ -9,6 +9,8 @@ https://github.com/vshymanskyy/StandWithUkraine/blob/main/docs/README.md
 
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://opensource.org/licenses/MIT)
 [![pypi version](https://img.shields.io/pypi/v/QtMDi)](https://pypi.org/project/QtMDi/)
+[![PyPI Python Version](https://img.shields.io/pypi/pyversions/qtmdi)](https://pypi.org/project/QtMDi/)
+
 
 *Copyright 2023 Yaroshenko Dmytro (https://github.com/o-murphy)*
 
@@ -29,6 +31,7 @@ https://github.com/vshymanskyy/StandWithUkraine/blob/main/docs/README.md
 - [Usage](#usage)
 - [Supported Fonts](#supported-fonts)
 - [Available Icons](#available-icons)
+- [Development](#development)
 - [Known issues](#known-issues)
 
 ## Installation
@@ -51,6 +54,7 @@ QtAwesome identifies icons by their prefix and their icon name, separated by a p
 The following prefixes are currently available to use:
 * `mds` prefix has [Google material design icons](https://github.com/google/material-design-icons) symbols style
 * `mdf` prefix has [Google material design icons](https://github.com/google/material-design-icons) variablefont style
+* `si` prefix has [Simple Icons](https://github.com/simple-icons/simple-icons-font) brand/logo icons, e.g. `qtawesome.icon("si.github")`
 
 ### Example
 
@@ -87,7 +91,7 @@ class Example(QtWidgets.QMainWindow):
         self.lt = QtWidgets.QVBoxLayout(self)
         self.btn = QtWidgets.QToolButton(self)
         self.btn.setIcon(
-            qtawesome.icon("mdi-rounded-700.home_filled"),
+            qtawesome.icon("mds-rounded-700.home"),
         )
         self.btn.setFixedSize(48, 48)
         self.btn.setIconSize(32, 32)
@@ -130,12 +134,77 @@ if __name__ == '__main__':
     run()
 ```
 
+> [!NOTE]
+> `qtmdi.load(app)` is lazy by default: it only registers *which* fonts are
+> available, and reads/loads the actual font file the first time one of its
+> icons is requested through `qtawesome.icon(...)`. This keeps memory usage
+> and startup time low when your app only ever uses a few styles/weights out
+> of everything QtMDi ships.
+>
+> Pass `qtmdi.load(app, lazy=False)` to load every shipped font immediately
+> instead (this is what `qtmdi-browser` does, since it needs to list every
+> icon right away).
+>
+> If you know upfront exactly which fonts your app uses, restrict qtmdi to
+> just those with `load_only`, e.g.
+> `qtmdi.load(app, load_only={"mds-rounded-700", "mdf"})`. This works with
+> both lazy (only those prefixes become loadable on demand) and
+> `lazy=False` (only those prefixes get loaded immediately).
+
 ## Available Icons
 To see available icons run qtmdi-browser in your terminal
 
 ```sh
 qtmdi-browser
 ```
+
+## Development
+
+This project uses [uv](https://docs.astral.sh/uv/) for dependency management and packaging.
+
+Font binaries under `src/qtmdi/icons` and `src/qtmdi/brands` aren't
+committed to git (they're fetched fresh at build/CI time to keep the repo
+small) - after cloning, run the fetch scripts once to populate them
+locally. `fetch_fonts.py` downloads the Material Symbols variable fonts
+straight from Google's
+[material-design-icons](https://github.com/google/material-design-icons)
+repository and generates the per-weight static files with `fonttools`;
+`fetch_brand_icons.py` downloads the Simple Icons font + metadata from its
+[GitHub Releases](https://github.com/simple-icons/simple-icons-font/releases).
+Neither needs `npm`/`node`/`woff2`:
+
+```sh
+# install dependencies (including dev tools)
+uv sync
+
+# fetch the fonts (one-time, or whenever you want the latest icons)
+uv run python scripts/fetch_fonts.py
+uv run python scripts/fetch_brand_icons.py
+uv run python scripts/fix_font_families.py
+uv run python scripts/create_symbols_charmap.py
+
+# run the test suite
+uv run pytest
+
+# lint
+uv run ruff check
+uv run flake8 .
+
+# launch the icon browser against your local checkout
+uv run qtmdi-browser
+```
+
+Font binaries are refreshed automatically by the
+[`symbols-update`](.github/workflows/symbols-update.yml) workflow (via
+`scripts/fetch_fonts.py` and `scripts/fetch_brand_icons.py`), which also
+fixes the Material Symbols fonts' internal family names so weight/style
+selection resolves correctly in Qt (`scripts/fix_font_families.py`),
+regenerates `icons/charmap.json` (`scripts/create_symbols_charmap.py`), and
+writes `manifest.json` - a checksum of every font file, committed instead
+of the binaries themselves, so the workflow can tell whether the fonts
+actually changed and only cut a release when they did
+(`scripts/write_font_manifest.py`). You normally shouldn't need to touch
+any of these by hand.
 
 ## Known issues
 * Filled icons not shown as expected
@@ -146,9 +215,15 @@ qtmdi-browser
 * MIT License. Copyright 2023 Yaroshenko Dmytro (https://github.com/o-murphy)
 See the [LICENSE](LICENSE) file for details.
 
-- The [Google material design icons](https://github.com/google/material-design-icons) fonts is licensed under the [Apache License Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+### Fonts bundled by QtMDi itself (`mdf`, `mds`, `si`)
 
-- The [material-symbols](https://github.com/marella/material-symbols) package is licensed under the [Apache License Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+- The [Google material design icons](https://github.com/google/material-design-icons) fonts (`mdf`, `mds`) are licensed under the [Apache License Version 2.0](http://www.apache.org/licenses/LICENSE-2.0). A copy of the license, and a notice describing the modifications QtMDi makes to the shipped font files, are included at [`src/qtmdi/licenses/Apache-2.0-material-design-icons.txt`](src/qtmdi/licenses/Apache-2.0-material-design-icons.txt) and [`src/qtmdi/licenses/NOTICE-material-design-icons.txt`](src/qtmdi/licenses/NOTICE-material-design-icons.txt) - both are packaged with every install.
+
+- The [Simple Icons](https://github.com/simple-icons/simple-icons-font) font (`si`) and its icon data are dedicated to the public domain under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/); a copy is included at [`src/qtmdi/licenses/CC0-1.0-simple-icons.md`](src/qtmdi/licenses/CC0-1.0-simple-icons.md).
+
+### Fonts available transitively through the QtAwesome dependency
+
+QtMDi doesn't bundle the fonts below itself - they ship as part of the `qtawesome` package (a QtMDi dependency), which carries its own licensing for them; they're listed here only because QtMDi's `load()`/`qtawesome.icon()` gives you access to their prefixes too.
 
 - The [QtAwesome](https://github.com/spyder-ide/qtawesome) licensed under the MIT License. Copyright 2015 - The Spyder development team.
 See the [LICENSE](https://github.com/spyder-ide/qtawesome/blob/master/LICENSE.txt) file for details.

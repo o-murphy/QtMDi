@@ -1,19 +1,17 @@
 [build-system]
-requires = ["setuptools", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["uv_build>=0.11.28,<0.12"]
+build-backend = "uv_build"
 
 
 [project]
 name = "QtMDi"
 version = '1.1.81'
 readme = 'README.md'
-authors = [
-    { name="o-murphy", email="thehelixpg@gmail.com" },
-]
+authors = [{ name = "o-murphy", email = "thehelixpg@gmail.com" }]
 description = "QtMDI (Qt Material Design Icons)"
-requires-python = ">=3.8"
+requires-python = ">=3.11"
 keywords = ["pyqt", "pyside", "material-icons", "material-symbols"]
-license = {file = "LICENSE"}
+license = { file = "LICENSE" }
 classifiers = [
     "Intended Audience :: Developers",
     "Natural Language :: English",
@@ -21,16 +19,14 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: Implementation :: CPython",
 ]
-dependencies = ['qtawesome', 'qtpy']
-# dynamic = ["version", "readme"]
+dependencies = ["qtawesome>=1.4.2", "qtpy>=2.4.3"]
 
 [project.urls]
 "Homepage" = "https://github.com/o-murphy/QtMDi"
@@ -38,21 +34,21 @@ dependencies = ['qtawesome', 'qtpy']
 "Source" = "https://github.com/o-murphy/QtMDi"
 
 
-[tool.setuptools]
-py-modules = ["QtMDi"]
-
-[tool.setuptools.packages.find]
-where = ["src"]
-
-# [tool.setuptools.dynamic]
-# version = {attr = "qtmdi.__version__"}
-# readme = {file = ["README.md"]}
+[dependency-groups]
+dev = [
+    "bump2version>=1.0.1",
+    "flake8>=7.3.0",
+    "fonttools>=4.61.1",
+    "pytest>=9.1.1",
+    "ruff>=0.15.21",
+    "pyqt6>=6.7.1",
+]
 
 [project.scripts]
-qtmdi-browser = "qtmdi:run"
+qtmdi-browser = "qtmdi.__main__:run"
 
 [project.entry-points.pyinstaller40]
 hook-dirs = "qtmdi.__pyinstaller:get_hook_dirs"
 
-[project.optional-dependencies]
-dev = ['pylint', 'flake8', 'pytest', 'bump2version']
+[tool.pytest]
+testpaths = ["tests"]

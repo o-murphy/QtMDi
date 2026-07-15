@@ -4,17 +4,17 @@ import qtmdi
 from qtpy import QtWidgets
 
 
-# pylint: disable=too-few-public-methods
 class Example(QtWidgets.QMainWindow):
     """
     Example app
     """
+
     def __init__(self):
         super().__init__()
         self.lt = QtWidgets.QVBoxLayout(self)
         self.btn = QtWidgets.QToolButton(self)
         self.btn.setIcon(
-            qtawesome.icon("mdi-rounded-700.home_filled"),
+            qtawesome.icon("mds-rounded-700.home"),
         )
         self.btn.setFixedSize(48, 48)
         self.btn.setIconSize(32, 32)
@@ -33,5 +33,5 @@ def run():
     sys.exit(app.exec_())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run()
