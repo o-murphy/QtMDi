@@ -50,6 +50,8 @@ _BUILT_IN_FONTS = (
 # prefix -> (ttf_filename, charmap_filename, directory), populated by _build_registry()
 _REGISTRY = {}
 _original_icon = None
+# None means "no restriction"; otherwise the only prefixes load() will act on.
+_ALLOWED_PREFIXES = None
 
 
 def _create_symbols_prefix(filename):
@@ -85,8 +87,11 @@ def _build_registry():
 
 
 def _ensure_loaded(prefix):
-    """Loads a single font on first use. No-op if already loaded or unknown."""
+    """Loads a single font on first use. No-op if already loaded, unknown,
+    or excluded by a prior load_only restriction."""
     if prefix not in _REGISTRY:
+        return
+    if _ALLOWED_PREFIXES is not None and prefix not in _ALLOWED_PREFIXES:
         return
     if prefix in qtawesome._instance().fontname:
         return
@@ -118,24 +123,38 @@ def _lazy_icon(*names, **kwargs):
     return _original_icon(*names, **kwargs)
 
 
-def load(app: QtWidgets.QApplication, lazy: bool = True):
+def load(app: QtWidgets.QApplication, lazy: bool = True, load_only: set = None):
     """Registers qtmdi fonts on the current QApplication.
 
     If lazy (the default), a font is only read from disk and registered
     with Qt the first time qtawesome.icon() is called with a matching
-    prefix. Pass lazy=False to load every shipped font immediately instead,
+    prefix. Pass lazy=False to load every allowed font immediately instead,
     e.g. for the icon browser, which needs the complete charmap upfront.
+
+    load_only restricts which prefixes qtmdi will ever touch (e.g.
+    {"mds-rounded-700", "mdf"}), whether loading lazily or eagerly - handy
+    when you know upfront exactly which fonts your app uses and want to
+    skip registering/loading the rest entirely. Calling load() again with
+    load_only=None (the default) lifts any previously set restriction.
     """
-    global _original_icon
+    global _original_icon, _ALLOWED_PREFIXES
     if app != QtWidgets.QApplication.instance():
         return
 
     _build_registry()
+
+    if load_only is None:
+        _ALLOWED_PREFIXES = None
+    elif _ALLOWED_PREFIXES is None:
+        _ALLOWED_PREFIXES = set(load_only)
+    else:
+        _ALLOWED_PREFIXES |= set(load_only)
 
     if lazy:
         if _original_icon is None:
             _original_icon = qtawesome.icon
             qtawesome.icon = _lazy_icon
     else:
-        for prefix in _REGISTRY:
+        allowed = _REGISTRY if _ALLOWED_PREFIXES is None else _ALLOWED_PREFIXES
+        for prefix in allowed:
             _ensure_loaded(prefix)

@@ -141,6 +141,12 @@ if __name__ == '__main__':
 > Pass `qtmdi.load(app, lazy=False)` to load every shipped font immediately
 > instead (this is what `qtmdi-browser` does, since it needs to list every
 > icon right away).
+>
+> If you know upfront exactly which fonts your app uses, restrict qtmdi to
+> just those with `load_only`, e.g.
+> `qtmdi.load(app, load_only={"mds-rounded-700", "mdf"})`. This works with
+> both lazy (only those prefixes become loadable on demand) and
+> `lazy=False` (only those prefixes get loaded immediately).
 
 ## Available Icons
 To see available icons run qtmdi-browser in your terminal
