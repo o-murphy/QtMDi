@@ -7,8 +7,11 @@
 **/*.egg-info
 **/.venv
 
-# Material Symbols font binaries are fetched at build/CI time (see
-# scripts/fetch_fonts.sh), not committed. src/qtmdi/icons/manifest.json and
-# charmap.json track their content instead.
+# Material Symbols and Simple Icons font binaries are fetched at build/CI
+# time (see scripts/fetch_fonts.py, scripts/fetch_brand_icons.py), not
+# committed. src/qtmdi/manifest.json and the charmap.json files track their
+# content instead.
 src/qtmdi/icons/**/*.ttf
 src/qtmdi/icons/**/*.otf
+src/qtmdi/brands/**/*.ttf
+src/qtmdi/brands/**/*.otf

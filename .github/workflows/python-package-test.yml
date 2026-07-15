@@ -34,6 +34,9 @@ jobs:
       - name: Fetch fonts
         run: uv run python scripts/fetch_fonts.py
 
+      - name: Fetch brand icons
+        run: uv run python scripts/fetch_brand_icons.py
+
       - name: Fix font family names
         run: uv run python scripts/fix_font_families.py
 

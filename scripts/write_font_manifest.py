@@ -1,20 +1,23 @@
-"""Writes a checksum manifest for the shipped Material Symbols fonts.
+"""Writes a checksum manifest for every fetched font asset (Material
+Symbols and Simple Icons).
 
 The font binaries themselves are no longer committed to git (they're
-fetched fresh at build/CI time, see scripts/fetch_fonts.sh and .gitignore).
-This small, git-tracked manifest is what symbols-update.yml diffs against
-to decide whether upstream fonts actually changed - added, removed, or
-modified - without needing the (large) binaries in history to tell.
+fetched fresh at build/CI time, see scripts/fetch_fonts.py,
+scripts/fetch_brand_icons.py and .gitignore). This small, git-tracked
+manifest is what symbols-update.yml diffs against to decide whether
+upstream fonts actually changed - added, removed, or modified - without
+needing the (large) binaries in history to tell.
 """
 
 import hashlib
 import json
 import os
 
-from qtmdi import SYMBOLS_DIR
+from qtmdi import BRANDS_DIR, SEARCH_DIR, SYMBOLS_DIR
 
-DEST = os.path.join(SYMBOLS_DIR, "manifest.json")
+DEST = os.path.join(SEARCH_DIR, "manifest.json")
 FONT_EXTENSIONS = (".ttf", ".otf")
+SCAN_DIRS = (SYMBOLS_DIR, BRANDS_DIR)
 
 
 def _hash_file(path: str) -> str:
@@ -27,13 +30,14 @@ def _hash_file(path: str) -> str:
 
 def build_manifest() -> dict:
     manifest = {}
-    for root, _, files in os.walk(SYMBOLS_DIR):
-        for filename in files:
-            if os.path.splitext(filename)[1] not in FONT_EXTENSIONS:
-                continue
-            path = os.path.join(root, filename)
-            rel = os.path.relpath(path, SYMBOLS_DIR).replace(os.sep, "/")
-            manifest[rel] = _hash_file(path)
+    for base_dir in SCAN_DIRS:
+        for root, _, files in os.walk(base_dir):
+            for filename in files:
+                if os.path.splitext(filename)[1] not in FONT_EXTENSIONS:
+                    continue
+                path = os.path.join(root, filename)
+                rel = os.path.relpath(path, SEARCH_DIR).replace(os.sep, "/")
+                manifest[rel] = _hash_file(path)
     return dict(sorted(manifest.items()))
 
 

@@ -52,6 +52,7 @@ QtAwesome identifies icons by their prefix and their icon name, separated by a p
 The following prefixes are currently available to use:
 * `mds` prefix has [Google material design icons](https://github.com/google/material-design-icons) symbols style
 * `mdf` prefix has [Google material design icons](https://github.com/google/material-design-icons) variablefont style
+* `si` prefix has [Simple Icons](https://github.com/simple-icons/simple-icons-font) brand/logo icons, e.g. `qtawesome.icon("si.github")`
 
 ### Example
 
@@ -159,13 +160,16 @@ qtmdi-browser
 
 This project uses [uv](https://docs.astral.sh/uv/) for dependency management and packaging.
 
-Font binaries under `src/qtmdi/icons` aren't committed to git (they're
-fetched fresh at build/CI time to keep the repo small) - after cloning, run
-`scripts/fetch_fonts.py` once to populate them locally. It downloads the
-variable fonts straight from Google's
+Font binaries under `src/qtmdi/icons` and `src/qtmdi/brands` aren't
+committed to git (they're fetched fresh at build/CI time to keep the repo
+small) - after cloning, run the fetch scripts once to populate them
+locally. `fetch_fonts.py` downloads the Material Symbols variable fonts
+straight from Google's
 [material-design-icons](https://github.com/google/material-design-icons)
-repository and generates the per-weight static files with `fonttools` -
-no `npm`/`node`/`woff2` needed:
+repository and generates the per-weight static files with `fonttools`;
+`fetch_brand_icons.py` downloads the Simple Icons font + metadata from its
+[GitHub Releases](https://github.com/simple-icons/simple-icons-font/releases).
+Neither needs `npm`/`node`/`woff2`:
 
 ```sh
 # install dependencies (including dev tools)
@@ -173,6 +177,7 @@ uv sync
 
 # fetch the fonts (one-time, or whenever you want the latest icons)
 uv run python scripts/fetch_fonts.py
+uv run python scripts/fetch_brand_icons.py
 uv run python scripts/fix_font_families.py
 uv run python scripts/create_symbols_charmap.py
 
@@ -189,14 +194,15 @@ uv run qtmdi-browser
 
 Font binaries are refreshed automatically by the
 [`symbols-update`](.github/workflows/symbols-update.yml) workflow (via
-`scripts/fetch_fonts.py`), which also fixes the fonts' internal family names
-so weight/style selection resolves correctly in Qt
-(`scripts/fix_font_families.py`), regenerates `icons/charmap.json`
-(`scripts/create_symbols_charmap.py`), and writes `icons/manifest.json` - a
-checksum of every font file, committed instead of the binaries themselves,
-so the workflow can tell whether the fonts actually changed and only cut a
-release when they did (`scripts/write_font_manifest.py`). You normally
-shouldn't need to touch any of these by hand.
+`scripts/fetch_fonts.py` and `scripts/fetch_brand_icons.py`), which also
+fixes the Material Symbols fonts' internal family names so weight/style
+selection resolves correctly in Qt (`scripts/fix_font_families.py`),
+regenerates `icons/charmap.json` (`scripts/create_symbols_charmap.py`), and
+writes `manifest.json` - a checksum of every font file, committed instead
+of the binaries themselves, so the workflow can tell whether the fonts
+actually changed and only cut a release when they did
+(`scripts/write_font_manifest.py`). You normally shouldn't need to touch
+any of these by hand.
 
 ## Known issues
 * Filled icons not shown as expected
@@ -209,7 +215,7 @@ See the [LICENSE](LICENSE) file for details.
 
 - The [Google material design icons](https://github.com/google/material-design-icons) fonts is licensed under the [Apache License Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 
-- The [material-symbols](https://github.com/marella/material-symbols) package is licensed under the [Apache License Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+- The [Simple Icons](https://github.com/simple-icons/simple-icons-font) font and its icon data are dedicated to the public domain under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/).
 
 - The [QtAwesome](https://github.com/spyder-ide/qtawesome) licensed under the MIT License. Copyright 2015 - The Spyder development team.
 See the [LICENSE](https://github.com/spyder-ide/qtawesome/blob/master/LICENSE.txt) file for details.

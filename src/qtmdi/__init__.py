@@ -13,6 +13,7 @@ from qtpy import QtWidgets
 SEARCH_DIR = os.path.dirname(__file__)
 FONT_DIR = os.path.join(SEARCH_DIR, "fonts")
 SYMBOLS_DIR = os.path.join(SEARCH_DIR, "icons")
+BRANDS_DIR = os.path.join(SEARCH_DIR, "brands")
 
 _BUILT_IN_FONTS = (
     (
@@ -44,6 +45,15 @@ _BUILT_IN_FONTS = (
         "MaterialIconsTwoTone-Regular.otf",
         "MaterialIconsTwoTone-Regular-charmap.json",
         FONT_DIR,
+    ),
+)
+
+_BRAND_FONTS = (
+    (
+        "si",
+        "simple-icons.ttf",
+        "simple-icons-charmap.json",
+        BRANDS_DIR,
     ),
 )
 
@@ -82,6 +92,7 @@ def _build_registry():
     for prefix, ttf_filename, charmap_filename, directory in (
         *_look_for_fonts(),
         *_BUILT_IN_FONTS,
+        *_BRAND_FONTS,
     ):
         _REGISTRY[prefix] = (ttf_filename, charmap_filename, directory)
 

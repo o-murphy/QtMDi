@@ -36,6 +36,9 @@ jobs:
     - name: Fetch fonts
       run: uv run python scripts/fetch_fonts.py
 
+    - name: Fetch brand icons
+      run: uv run python scripts/fetch_brand_icons.py
+
     - name: Fix font family names
       run: uv run python scripts/fix_font_families.py
 
@@ -49,24 +52,30 @@ jobs:
       uses: actions/upload-artifact@v7
       with:
         name: ttf
-        path: src/qtmdi/icons/**/*.ttf
+        path: |
+          src/qtmdi/icons/**/*.ttf
+          src/qtmdi/brands/**/*.ttf
 
     - name: Commit and Push Changes (Fonts update)
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
-        commit_message: "Scheduled material-symbols update"
+        commit_message: "Scheduled fonts update"
         commit_options: "--no-verify"
         # Font binaries are gitignored (fetched fresh at build time, see
-        # scripts/fetch_fonts.sh); manifest.json's checksums are what
-        # actually reveal whether upstream fonts were added, removed or
-        # changed, so a commit (and the release below) only happens when
-        # something real changed - not on every no-op daily run.
-        file_pattern: "src/qtmdi/icons/charmap.json src/qtmdi/icons/manifest.json"
+        # scripts/fetch_fonts.py and scripts/fetch_brand_icons.py);
+        # manifest.json's checksums are what actually reveal whether
+        # upstream fonts were added, removed or changed, so a commit (and
+        # the release below) only happens when something real changed -
+        # not on every no-op daily run.
+        file_pattern: >-
+          src/qtmdi/icons/charmap.json
+          src/qtmdi/brands/simple-icons-charmap.json
+          src/qtmdi/manifest.json
 
     - name: Check if changes were committed
       id: check_changes
       run: |
-        if git log -1 --pretty=%B | grep -q "Scheduled material-symbols update"; then
+        if git log -1 --pretty=%B | grep -q "Scheduled fonts update"; then
           echo "changes_made=true" >> $GITHUB_OUTPUT
         else
           echo "changes_made=false" >> $GITHUB_OUTPUT
