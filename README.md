@@ -36,7 +36,17 @@ https://github.com/vshymanskyy/StandWithUkraine/blob/main/docs/README.md
 
 ## Installation
 
-Install the [latest release][releases] from PyPi using:
+QtMDi is built on [QtAwesome](https://github.com/spyder-ide/qtawesome) and
+[qtpy](https://github.com/spyder-industries/qtpy), which is just an
+abstraction layer over Qt bindings - it doesn't ship a Qt binding itself,
+so you need to install one (`PyQt5`, `PySide2`, `PyQt6` or `PySide6`)
+alongside it:
+
+```sh
+pip install QtMDi PyQt6
+```
+
+Install the latest release from PyPi:
 ```sh
 pip install QtMDi
 ```
@@ -44,6 +54,20 @@ pip install QtMDi
 Install the latest updated version from github:
 ```sh
 pip install https://github.com/o-murphy/QtMDi
+```
+
+### Using `qtmdi-browser` as a standalone tool
+
+If you just want to run the icon browser (see [Available Icons](#available-icons))
+without installing QtMDi into a project, use `uv tool install` (or `pipx`)
+with a Qt binding as an extra dependency:
+
+```sh
+uv tool install qtmdi --with pyqt6
+# or
+uv tool install qtmdi --with pyside6
+
+qtmdi-browser
 ```
 
 ## Usage
