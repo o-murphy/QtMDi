@@ -49,7 +49,6 @@ def _create_symbols_prefix(filename):
     """creates prefix for dynamic loaded symbol fonts"""
     try:
         return f"mds-{os.path.splitext(filename)[0].split('-')[-1]}"
-    # pylint: disable=broad-exception-caught
     except Exception as exc:
         print(exc)
         return "mds-other"
@@ -87,7 +86,6 @@ def run():
 
     browser = IconBrowser()
     browser.setWindowTitle("QtMDi Icon Browser")
-    # pylint: disable=protected-access
     browser._comboFont.setCurrentText("mdf")
     browser.show()
     sys.exit(app.exec_())

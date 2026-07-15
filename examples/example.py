@@ -4,7 +4,6 @@ import qtmdi
 from qtpy import QtWidgets
 
 
-# pylint: disable=too-few-public-methods
 class Example(QtWidgets.QMainWindow):
     """
     Example app

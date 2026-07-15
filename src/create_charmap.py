@@ -3,8 +3,7 @@
 import os
 import re
 import json
-from qtmdi import FONT_DIR  # pylint: disable=import-error
-
+from qtmdi import FONT_DIR
 
 REGEX_SEARCH = r"(\w+) ([a-f\d]+)"
 
