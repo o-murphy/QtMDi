@@ -4,10 +4,17 @@ qtawesome extension with the latest variable icon fonts for Material Symbols (Py
 (C) 2023 Yaroshenko Dmytro (https://github.com/o-murphy)
 """
 
-import os
+from __future__ import annotations
 
-import qtawesome
-from qtpy import QtWidgets
+import os
+import typing
+
+# qtawesome/qtpy are imported lazily (inside the functions that need them),
+# not here at module scope: importing qtmdi just for its path constants
+# (as the font-fetch scripts under scripts/ do) must not require a Qt
+# binding or its native libraries (e.g. libEGL) to be installed.
+if typing.TYPE_CHECKING:
+    from qtpy import QtWidgets
 
 
 SEARCH_DIR = os.path.dirname(__file__)
@@ -104,6 +111,8 @@ def _ensure_loaded(prefix):
         return
     if _ALLOWED_PREFIXES is not None and prefix not in _ALLOWED_PREFIXES:
         return
+    import qtawesome
+
     if prefix in qtawesome._instance().fontname:
         return
     qtawesome.load_font(prefix, *_REGISTRY[prefix])
@@ -149,6 +158,9 @@ def load(app: QtWidgets.QApplication, lazy: bool = True, load_only: set = None):
     load_only=None (the default) lifts any previously set restriction.
     """
     global _original_icon, _ALLOWED_PREFIXES
+    import qtawesome
+    from qtpy import QtWidgets
+
     if app != QtWidgets.QApplication.instance():
         return
 
