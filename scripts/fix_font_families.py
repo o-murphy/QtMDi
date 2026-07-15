@@ -20,8 +20,7 @@ import os
 
 from fontTools.ttLib import TTFont
 
-SEARCH_DIR = os.path.join(os.path.dirname(__file__), "qtmdi")
-SYMBOLS_DIR = os.path.join(SEARCH_DIR, "icons")
+from qtmdi import SYMBOLS_DIR
 
 # name IDs that identify the font to the OS/Qt font matcher.
 FAMILY_NAME_IDS = (1, 3, 4, 6, 16)

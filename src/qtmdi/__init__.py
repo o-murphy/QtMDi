@@ -5,10 +5,8 @@ qtawesome extension with the latest variable icon fonts for Material Symbols (Py
 """
 
 import os
-import sys
 
 import qtawesome
-from qtawesome.icon_browser import IconBrowser
 from qtpy import QtWidgets
 
 
@@ -21,28 +19,37 @@ _BUILT_IN_FONTS = (
         "mdf",
         "MaterialIcons-Regular.ttf",
         "MaterialIcons-Regular-charmap.json",
+        FONT_DIR,
     ),
     (
         "mdf-outlined",
         "MaterialIconsOutlined-Regular.otf",
         "MaterialIconsOutlined-Regular-charmap.json",
+        FONT_DIR,
     ),
     (
         "mdf-round",
         "MaterialIconsRound-Regular.otf",
         "MaterialIconsRound-Regular-charmap.json",
+        FONT_DIR,
     ),
     (
         "mdf-sharp",
         "MaterialIconsSharp-Regular.otf",
         "MaterialIconsSharp-Regular-charmap.json",
+        FONT_DIR,
     ),
     (
         "mdf-2tone",
         "MaterialIconsTwoTone-Regular.otf",
         "MaterialIconsTwoTone-Regular-charmap.json",
+        FONT_DIR,
     ),
 )
+
+# prefix -> (ttf_filename, charmap_filename, directory), populated by _build_registry()
+_REGISTRY = {}
+_original_icon = None
 
 
 def _create_symbols_prefix(filename):
@@ -66,30 +73,69 @@ def _look_for_fonts():
     return fonts
 
 
-def load(app: QtWidgets.QApplication):
-    """loads fonts and symbols to current QApplication instance"""
-    if app == QtWidgets.QApplication.instance():
-        for symbols in _look_for_fonts():
-            qtawesome.load_font(*symbols)
+def _build_registry():
+    """Enumerates every available font and its files without reading them."""
+    if _REGISTRY:
+        return
+    for prefix, ttf_filename, charmap_filename, directory in (
+        *_look_for_fonts(),
+        *_BUILT_IN_FONTS,
+    ):
+        _REGISTRY[prefix] = (ttf_filename, charmap_filename, directory)
 
-        for font in _BUILT_IN_FONTS:
-            qtawesome.load_font(*font, FONT_DIR)
+
+def _ensure_loaded(prefix):
+    """Loads a single font on first use. No-op if already loaded or unknown."""
+    if prefix not in _REGISTRY:
+        return
+    if prefix in qtawesome._instance().fontname:
+        return
+    qtawesome.load_font(prefix, *_REGISTRY[prefix])
 
 
-def run():
+def _iter_strings(value):
+    """Recursively yields every string found in icon-name arguments/options,
+    covering plain names, 'active'/'disabled'/'selected' kwargs and the
+    per-glyph 'options' list used for icon stacks."""
+    if isinstance(value, str):
+        yield value
+    elif isinstance(value, dict):
+        for item in value.values():
+            yield from _iter_strings(item)
+    elif isinstance(value, (list, tuple)):
+        for item in value:
+            yield from _iter_strings(item)
+
+
+def _lazy_icon(*names, **kwargs):
+    """Drop-in replacement for qtawesome.icon() that loads a qtmdi font
+    the first time its prefix is actually referenced, instead of eagerly
+    loading every shipped font up front."""
+    for value in (*names, kwargs):
+        for text in _iter_strings(value):
+            if "." in text:
+                _ensure_loaded(text.split(".", 1)[0])
+    return _original_icon(*names, **kwargs)
+
+
+def load(app: QtWidgets.QApplication, lazy: bool = True):
+    """Registers qtmdi fonts on the current QApplication.
+
+    If lazy (the default), a font is only read from disk and registered
+    with Qt the first time qtawesome.icon() is called with a matching
+    prefix. Pass lazy=False to load every shipped font immediately instead,
+    e.g. for the icon browser, which needs the complete charmap upfront.
     """
-    Start the IconBrowser and block until the process exits.
-    """
-    app = QtWidgets.QApplication(sys.argv)
-    load(app)
-    qtawesome.dark(app)
+    global _original_icon
+    if app != QtWidgets.QApplication.instance():
+        return
 
-    browser = IconBrowser()
-    browser.setWindowTitle("QtMDi Icon Browser")
-    browser._comboFont.setCurrentText("mdf")
-    browser.show()
-    sys.exit(app.exec_())
+    _build_registry()
 
-
-if __name__ == "__main__":
-    run()
+    if lazy:
+        if _original_icon is None:
+            _original_icon = qtawesome.icon
+            qtawesome.icon = _lazy_icon
+    else:
+        for prefix in _REGISTRY:
+            _ensure_loaded(prefix)

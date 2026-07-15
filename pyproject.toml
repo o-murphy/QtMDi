@@ -45,7 +45,7 @@ dev = [
 ]
 
 [project.scripts]
-qtmdi-browser = "qtmdi:run"
+qtmdi-browser = "qtmdi.__main__:run"
 
 [project.entry-points.pyinstaller40]
 hook-dirs = "qtmdi.__pyinstaller:get_hook_dirs"

@@ -75,7 +75,10 @@ jobs:
         cp ./node_modules/@material-symbols/font-700/*.ttf ./src/qtmdi/icons/700
 
     - name: Fix font family names
-      run: uv run python src/fix_font_families.py
+      run: uv run python scripts/fix_font_families.py
+
+    - name: Regenerate symbols charmap
+      run: uv run python scripts/create_symbols_charmap.py
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v7
@@ -90,7 +93,7 @@ jobs:
       with:
         commit_message: "Scheduled material-symbols update"
         commit_options: "--no-verify"
-        file_pattern: "src/qtmdi/icons/**/*.ttf"
+        file_pattern: "src/qtmdi/icons/**/*.ttf src/qtmdi/icons/charmap.json"
 
     - name: Check if changes were committed
       id: check_changes
