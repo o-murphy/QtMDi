@@ -13,8 +13,8 @@ from qtpy import QtWidgets
 
 
 SEARCH_DIR = os.path.dirname(__file__)
-FONT_DIR = os.path.join(SEARCH_DIR, 'fonts')
-SYMBOLS_DIR = os.path.join(SEARCH_DIR, 'icons')
+FONT_DIR = os.path.join(SEARCH_DIR, "fonts")
+SYMBOLS_DIR = os.path.join(SEARCH_DIR, "icons")
 
 _BUILT_IN_FONTS = (
     (
@@ -63,21 +63,20 @@ def _look_for_fonts():
             if os.path.splitext(file)[1] == ".ttf":
                 # filepath = os.path.join(root, file)
                 prefix = f"{_create_symbols_prefix(file)}-{path[-1]}"
-                fonts.append(
-                    (prefix, file, "../charmap.json", root)
-                )
+                fonts.append((prefix, file, "../charmap.json", root))
     return fonts
 
 
 def load(app: QtWidgets.QApplication):
     """loads fonts and symbols to current QApplication instance"""
     if app == QtWidgets.QApplication.instance():
-
         for symbols in _look_for_fonts():
             qtawesome.load_font(*symbols)
 
         for font in _BUILT_IN_FONTS:
             qtawesome.load_font(*font, FONT_DIR)
+
+
 def run():
     """
     Start the IconBrowser and block until the process exits.
@@ -87,12 +86,12 @@ def run():
     qtawesome.dark(app)
 
     browser = IconBrowser()
-    browser.setWindowTitle('QtMDi Icon Browser')
+    browser.setWindowTitle("QtMDi Icon Browser")
     # pylint: disable=protected-access
     browser._comboFont.setCurrentText("mdf")
     browser.show()
     sys.exit(app.exec_())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run()

@@ -21,8 +21,7 @@ jobs:
       
     steps:
 
-    - name: Checkout curent repo
-      uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         ref: ${{ github.head_ref }}
 
@@ -91,12 +90,15 @@ jobs:
           echo "changes_made=false" >> $GITHUB_OUTPUT
         fi
 
-    - name: Install Python
-      id: install_python
+    - name: Install uv
       if: steps.check_changes.outputs.changes_made == 'true'
-      uses: actions/setup-python@v6
+      uses: astral-sh/setup-uv@37802adc94f370d6bfd71619e3f0bf239e1f3b78
       with:
-        python-version: '3.x' # Replace '3.x' with the specific version you need
+        python-version: '3.11'
+
+    - name: Install dependencies
+      if: steps.check_changes.outputs.changes_made == 'true'
+      run: uv sync
 
     - name: Configure git user
       if: steps.check_changes.outputs.changes_made == 'true'
@@ -106,9 +108,7 @@ jobs:
 
     - name: Bump version
       if: steps.check_changes.outputs.changes_made == 'true'
-      run: |
-        python -m pip install --upgrade bump2version toml
-        bump2version patch --allow-dirty
+      run: uv run bump2version patch --allow-dirty
 
     - name: Push version to current branch
       if: steps.check_changes.outputs.changes_made == 'true'
@@ -121,7 +121,7 @@ jobs:
       if: steps.check_changes.outputs.changes_made == 'true'
       id: extract_version
       run: |
-        VERSION=$(python -c "import toml; print(toml.load('pyproject.toml')['project']['version'])")
+        VERSION=$(uv run python -c "import tomllib; print(tomllib.load(open('pyproject.toml', 'rb'))['project']['version'])")
         echo "Extracted version is $VERSION"
         echo "VERSION=$VERSION" >> $GITHUB_ENV
 

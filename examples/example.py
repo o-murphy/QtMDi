@@ -9,6 +9,7 @@ class Example(QtWidgets.QMainWindow):
     """
     Example app
     """
+
     def __init__(self):
         super().__init__()
         self.lt = QtWidgets.QVBoxLayout(self)
@@ -33,5 +34,5 @@ def run():
     sys.exit(app.exec_())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run()
