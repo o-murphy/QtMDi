@@ -14,7 +14,7 @@ class Example(QtWidgets.QMainWindow):
         self.lt = QtWidgets.QVBoxLayout(self)
         self.btn = QtWidgets.QToolButton(self)
         self.btn.setIcon(
-            qtawesome.icon("mdi-rounded-700.home_filled"),
+            qtawesome.icon("mds-rounded-700.home"),
         )
         self.btn.setFixedSize(48, 48)
         self.btn.setIconSize(32, 32)

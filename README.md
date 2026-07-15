@@ -29,6 +29,7 @@ https://github.com/vshymanskyy/StandWithUkraine/blob/main/docs/README.md
 - [Usage](#usage)
 - [Supported Fonts](#supported-fonts)
 - [Available Icons](#available-icons)
+- [Development](#development)
 - [Known issues](#known-issues)
 
 ## Installation
@@ -87,7 +88,7 @@ class Example(QtWidgets.QMainWindow):
         self.lt = QtWidgets.QVBoxLayout(self)
         self.btn = QtWidgets.QToolButton(self)
         self.btn.setIcon(
-            qtawesome.icon("mdi-rounded-700.home_filled"),
+            qtawesome.icon("mds-rounded-700.home"),
         )
         self.btn.setFixedSize(48, 48)
         self.btn.setIconSize(32, 32)
@@ -130,12 +131,49 @@ if __name__ == '__main__':
     run()
 ```
 
+> [!NOTE]
+> `qtmdi.load(app)` is lazy by default: it only registers *which* fonts are
+> available, and reads/loads the actual font file the first time one of its
+> icons is requested through `qtawesome.icon(...)`. This keeps memory usage
+> and startup time low when your app only ever uses a few styles/weights out
+> of everything QtMDi ships.
+>
+> Pass `qtmdi.load(app, lazy=False)` to load every shipped font immediately
+> instead (this is what `qtmdi-browser` does, since it needs to list every
+> icon right away).
+
 ## Available Icons
 To see available icons run qtmdi-browser in your terminal
 
 ```sh
 qtmdi-browser
 ```
+
+## Development
+
+This project uses [uv](https://docs.astral.sh/uv/) for dependency management and packaging.
+
+```sh
+# install dependencies (including dev tools)
+uv sync
+
+# run the test suite
+uv run pytest
+
+# lint
+uv run ruff check
+uv run flake8 .
+
+# launch the icon browser against your local checkout
+uv run qtmdi-browser
+```
+
+Font binaries under `src/qtmdi/icons` are refreshed automatically by the
+[`symbols-update`](.github/workflows/symbols-update.yml) workflow, which also
+regenerates `icons/charmap.json` (see `scripts/create_symbols_charmap.py`) and
+fixes the fonts' internal family names so weight/style selection resolves
+correctly in Qt (see `scripts/fix_font_families.py`). You normally shouldn't
+need to touch either by hand.
 
 ## Known issues
 * Filled icons not shown as expected
