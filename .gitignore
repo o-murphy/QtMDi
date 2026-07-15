@@ -6,3 +6,9 @@
 **/dist
 **/*.egg-info
 **/.venv
+
+# Material Symbols font binaries are fetched at build/CI time (see
+# scripts/fetch_fonts.sh), not committed. src/qtmdi/icons/manifest.json and
+# charmap.json track their content instead.
+src/qtmdi/icons/**/*.ttf
+src/qtmdi/icons/**/*.otf

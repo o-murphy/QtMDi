@@ -31,6 +31,9 @@ jobs:
       - name: Install dependencies
         run: uv sync
 
+      - name: Fetch and process fonts
+        run: bash scripts/fetch_fonts.sh
+
       - name: Lint with flake8
         run: |
           # stop the build if there are Python syntax errors or undefined names

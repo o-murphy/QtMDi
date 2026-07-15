@@ -10,15 +10,15 @@ jobs:
   build-n-release:
 
     runs-on: ubuntu-latest
-    
+
     permissions:
       # Give the default GITHUB_TOKEN write permission to commit and push the changed files back to the repository.
       contents: write
-    
+
     strategy:
       fail-fast: false
 
-      
+
     steps:
 
     - uses: actions/checkout@v7
@@ -33,52 +33,8 @@ jobs:
     - name: Install dependencies
       run: uv sync
 
-    - name: Initialize npm and install material-symbols
-      run: |
-        npm init -y
-        npm install material-symbols@latest
-        npm install @material-symbols/font-100@latest
-        npm install @material-symbols/font-200@latest
-        npm install @material-symbols/font-300@latest
-        npm install @material-symbols/font-400@latest
-        npm install @material-symbols/font-500@latest
-        npm install @material-symbols/font-600@latest
-        npm install @material-symbols/font-700@latest
-
-    - name: Install Woff2
-      run : |
-        sudo apt install woff2
-
-    - name: Decompress Woff2 Fonts
-      run: |
-        find ./node_modules -type f -name "*.woff2" -print0 | while IFS= read -r -d '' file; do
-          woff2_decompress "$file"
-        done
-
-    - name: Copy .ttf files to src/qtmdi/icons
-      run: |
-        mkdir -p ./src/qtmdi/icons/base
-        mkdir -p ./src/qtmdi/icons/100
-        mkdir -p ./src/qtmdi/icons/200
-        mkdir -p ./src/qtmdi/icons/300
-        mkdir -p ./src/qtmdi/icons/400
-        mkdir -p ./src/qtmdi/icons/500
-        mkdir -p ./src/qtmdi/icons/600
-        mkdir -p ./src/qtmdi/icons/700
-        cp ./node_modules/material-symbols/*.ttf ./src/qtmdi/icons/base
-        cp ./node_modules/@material-symbols/font-100/*.ttf ./src/qtmdi/icons/100
-        cp ./node_modules/@material-symbols/font-200/*.ttf ./src/qtmdi/icons/200
-        cp ./node_modules/@material-symbols/font-300/*.ttf ./src/qtmdi/icons/300
-        cp ./node_modules/@material-symbols/font-400/*.ttf ./src/qtmdi/icons/400
-        cp ./node_modules/@material-symbols/font-500/*.ttf ./src/qtmdi/icons/500
-        cp ./node_modules/@material-symbols/font-600/*.ttf ./src/qtmdi/icons/600
-        cp ./node_modules/@material-symbols/font-700/*.ttf ./src/qtmdi/icons/700
-
-    - name: Fix font family names
-      run: uv run python scripts/fix_font_families.py
-
-    - name: Regenerate symbols charmap
-      run: uv run python scripts/create_symbols_charmap.py
+    - name: Fetch and process fonts
+      run: bash scripts/fetch_fonts.sh
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v7
@@ -93,7 +49,12 @@ jobs:
       with:
         commit_message: "Scheduled material-symbols update"
         commit_options: "--no-verify"
-        file_pattern: "src/qtmdi/icons/**/*.ttf src/qtmdi/icons/charmap.json"
+        # Font binaries are gitignored (fetched fresh at build time, see
+        # scripts/fetch_fonts.sh); manifest.json's checksums are what
+        # actually reveal whether upstream fonts were added, removed or
+        # changed, so a commit (and the release below) only happens when
+        # something real changed - not on every no-op daily run.
+        file_pattern: "src/qtmdi/icons/charmap.json src/qtmdi/icons/manifest.json"
 
     - name: Check if changes were committed
       id: check_changes

@@ -159,9 +159,17 @@ qtmdi-browser
 
 This project uses [uv](https://docs.astral.sh/uv/) for dependency management and packaging.
 
+Font binaries under `src/qtmdi/icons` aren't committed to git (they're
+fetched fresh at build/CI time to keep the repo small) - after cloning, run
+`scripts/fetch_fonts.sh` once to populate them locally (requires `npm` and
+`woff2`):
+
 ```sh
 # install dependencies (including dev tools)
 uv sync
+
+# fetch the fonts (one-time, or whenever you want the latest icons)
+bash scripts/fetch_fonts.sh
 
 # run the test suite
 uv run pytest
@@ -174,12 +182,16 @@ uv run flake8 .
 uv run qtmdi-browser
 ```
 
-Font binaries under `src/qtmdi/icons` are refreshed automatically by the
-[`symbols-update`](.github/workflows/symbols-update.yml) workflow, which also
-regenerates `icons/charmap.json` (see `scripts/create_symbols_charmap.py`) and
-fixes the fonts' internal family names so weight/style selection resolves
-correctly in Qt (see `scripts/fix_font_families.py`). You normally shouldn't
-need to touch either by hand.
+Font binaries are refreshed automatically by the
+[`symbols-update`](.github/workflows/symbols-update.yml) workflow (via
+`scripts/fetch_fonts.sh`), which also fixes the fonts' internal family names
+so weight/style selection resolves correctly in Qt
+(`scripts/fix_font_families.py`), regenerates `icons/charmap.json`
+(`scripts/create_symbols_charmap.py`), and writes `icons/manifest.json` - a
+checksum of every font file, committed instead of the binaries themselves,
+so the workflow can tell whether the fonts actually changed and only cut a
+release when they did (`scripts/write_font_manifest.py`). You normally
+shouldn't need to touch any of these by hand.
 
 ## Known issues
 * Filled icons not shown as expected
