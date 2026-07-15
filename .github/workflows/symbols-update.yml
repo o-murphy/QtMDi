@@ -33,16 +33,23 @@ jobs:
     - name: Install dependencies
       run: uv sync
 
-    - name: Fetch and process fonts
-      run: bash scripts/fetch_fonts.sh
+    - name: Fetch fonts
+      run: uv run python scripts/fetch_fonts.py
+
+    - name: Fix font family names
+      run: uv run python scripts/fix_font_families.py
+
+    - name: Regenerate symbols charmap
+      run: uv run python scripts/create_symbols_charmap.py
+
+    - name: Write font manifest
+      run: uv run python scripts/write_font_manifest.py
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v7
       with:
         name: ttf
-        path: |
-          ./node_modules/material-symbols/*.tff
-          ./node_modules/@material-symbols/**/*.ttf
+        path: src/qtmdi/icons/**/*.ttf
 
     - name: Commit and Push Changes (Fonts update)
       uses: stefanzweifel/git-auto-commit-action@v5

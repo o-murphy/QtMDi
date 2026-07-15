@@ -161,15 +161,20 @@ This project uses [uv](https://docs.astral.sh/uv/) for dependency management and
 
 Font binaries under `src/qtmdi/icons` aren't committed to git (they're
 fetched fresh at build/CI time to keep the repo small) - after cloning, run
-`scripts/fetch_fonts.sh` once to populate them locally (requires `npm` and
-`woff2`):
+`scripts/fetch_fonts.py` once to populate them locally. It downloads the
+variable fonts straight from Google's
+[material-design-icons](https://github.com/google/material-design-icons)
+repository and generates the per-weight static files with `fonttools` -
+no `npm`/`node`/`woff2` needed:
 
 ```sh
 # install dependencies (including dev tools)
 uv sync
 
 # fetch the fonts (one-time, or whenever you want the latest icons)
-bash scripts/fetch_fonts.sh
+uv run python scripts/fetch_fonts.py
+uv run python scripts/fix_font_families.py
+uv run python scripts/create_symbols_charmap.py
 
 # run the test suite
 uv run pytest
@@ -184,7 +189,7 @@ uv run qtmdi-browser
 
 Font binaries are refreshed automatically by the
 [`symbols-update`](.github/workflows/symbols-update.yml) workflow (via
-`scripts/fetch_fonts.sh`), which also fixes the fonts' internal family names
+`scripts/fetch_fonts.py`), which also fixes the fonts' internal family names
 so weight/style selection resolves correctly in Qt
 (`scripts/fix_font_families.py`), regenerates `icons/charmap.json`
 (`scripts/create_symbols_charmap.py`), and writes `icons/manifest.json` - a
