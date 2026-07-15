@@ -1,0 +1,18 @@
+This package bundles fonts derived from Google's Material Design Icons /
+Material Symbols project (https://github.com/google/material-design-icons),
+licensed under the Apache License, Version 2.0 (see
+Apache-2.0-material-design-icons.txt in this directory).
+
+Modifications made to the original font files by QtMDi
+(https://github.com/o-murphy/QtMDi):
+
+* Per-weight static instances (100-700) are generated from Google's
+  variable fonts using fonttools' variation-axis instancer
+  (scripts/fetch_fonts.py).
+* The instanced fonts' internal name-table records (family, full, unique
+  and PostScript names) are rewritten to make each weight/style variant
+  register as a distinct font family with Qt
+  (scripts/fix_font_families.py).
+
+No glyph outlines or icon designs are altered - only font metadata and
+which discrete weight instances are extracted from the variable font.
