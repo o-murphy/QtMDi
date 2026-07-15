@@ -89,7 +89,18 @@ jobs:
 
     - name: Bump version
       if: steps.check_changes.outputs.changes_made == 'true'
-      run: uv run bump2version patch --allow-dirty
+      run: |
+        # If the current version already carries a pre-release suffix
+        # (e.g. 2.0.0b1, published manually for beta testing), bump the
+        # pre-release number instead of patch - a plain patch bump would
+        # silently drop the suffix (2.0.0b1 -> 2.0.1) and promote an
+        # in-progress beta to a "final" release.
+        CURRENT_VERSION=$(uv run python -c "import tomllib; print(tomllib.load(open('pyproject.toml', 'rb'))['project']['version'])")
+        if echo "$CURRENT_VERSION" | grep -qE '(a|b|rc)[0-9]+$'; then
+          uv run bump2version pre_n --allow-dirty
+        else
+          uv run bump2version patch --allow-dirty
+        fi
 
     - name: Push version to current branch
       if: steps.check_changes.outputs.changes_made == 'true'
