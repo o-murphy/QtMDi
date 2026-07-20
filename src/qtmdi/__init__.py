@@ -67,6 +67,8 @@ _BRAND_FONTS = (
 # prefix -> (ttf_filename, charmap_filename, directory), populated by _build_registry()
 _REGISTRY = {}
 _original_icon = None
+_original_font = None
+_original_charmap = None
 # None means "no restriction"; otherwise the only prefixes load() will act on.
 _ALLOWED_PREFIXES = None
 
@@ -143,28 +145,63 @@ def _lazy_icon(*names, **kwargs):
     return _original_icon(*names, **kwargs)
 
 
+def _lazy_font(prefix, size):
+    """Drop-in replacement for qtawesome.font(), see _lazy_icon."""
+    _ensure_loaded(prefix)
+    return _original_font(prefix, size)
+
+
+def _lazy_charmap(prefixed_name):
+    """Drop-in replacement for qtawesome.charmap(), see _lazy_icon."""
+    _ensure_loaded(prefixed_name.split(".", 1)[0])
+    return _original_charmap(prefixed_name)
+
+
+def _install_hooks():
+    """Wraps qtawesome's icon/font/charmap lookups so a qtmdi font gets
+    registered the first time its prefix is actually referenced, without
+    requiring an explicit load() call. Idempotent - safe to call again
+    (e.g. from load()) once hooks are already installed."""
+    global _original_icon, _original_font, _original_charmap
+    import qtawesome
+
+    _build_registry()
+
+    if _original_icon is None:
+        _original_icon = qtawesome.icon
+        qtawesome.icon = _lazy_icon
+    if _original_font is None:
+        _original_font = qtawesome.font
+        qtawesome.font = _lazy_font
+    if _original_charmap is None:
+        _original_charmap = qtawesome.charmap
+        qtawesome.charmap = _lazy_charmap
+
+
 def load(app: QtWidgets.QApplication, lazy: bool = True, load_only: set = None):
     """Registers qtmdi fonts on the current QApplication.
 
-    If lazy (the default), a font is only read from disk and registered
-    with Qt the first time qtawesome.icon() is called with a matching
-    prefix. Pass lazy=False to load every allowed font immediately instead,
-    e.g. for the icon browser, which needs the complete charmap upfront.
+    Note that qtawesome.icon()/font()/charmap() already lazily pick up
+    qtmdi fonts as soon as qtmdi is imported, with no call to load()
+    required. Call load() when you need one of:
 
-    load_only restricts which prefixes qtmdi will ever touch (e.g.
-    {"mds-rounded-700", "mdf"}), whether loading lazily or eagerly - handy
-    when you know upfront exactly which fonts your app uses and want to
-    skip registering/loading the rest entirely. Calling load() again with
-    load_only=None (the default) lifts any previously set restriction.
+    - load_only: restricts which prefixes qtmdi will ever touch (e.g.
+      {"mds-rounded-700", "mdf"}), whether loading lazily or eagerly -
+      handy when you know upfront exactly which fonts your app uses and
+      want to skip registering/loading the rest entirely. Calling load()
+      again with load_only=None (the default) lifts any previously set
+      restriction.
+    - lazy=False: loads every allowed font immediately instead of waiting
+      for first use, e.g. for the icon browser, which needs the complete
+      charmap upfront.
     """
-    global _original_icon, _ALLOWED_PREFIXES
-    import qtawesome
+    global _ALLOWED_PREFIXES
     from qtpy import QtWidgets
 
     if app != QtWidgets.QApplication.instance():
         return
 
-    _build_registry()
+    _install_hooks()
 
     if load_only is None:
         _ALLOWED_PREFIXES = None
@@ -173,11 +210,21 @@ def load(app: QtWidgets.QApplication, lazy: bool = True, load_only: set = None):
     else:
         _ALLOWED_PREFIXES |= set(load_only)
 
-    if lazy:
-        if _original_icon is None:
-            _original_icon = qtawesome.icon
-            qtawesome.icon = _lazy_icon
-    else:
+    if not lazy:
         allowed = _REGISTRY if _ALLOWED_PREFIXES is None else _ALLOWED_PREFIXES
         for prefix in allowed:
             _ensure_loaded(prefix)
+
+
+try:
+    # Best-effort: install the lazy hooks as soon as qtmdi is imported, so
+    # qtawesome.icon("mds-...")/font()/charmap() work without an explicit
+    # load() call. qtawesome/qtpy are hard dependencies of this package,
+    # but the actual Qt binding (PyQt/PySide) is a separate, optional
+    # native dependency - scripts that only need qtmdi's path constants
+    # (e.g. scripts/fetch_fonts.py) must keep working without one
+    # installed, so any failure here (missing/broken binding) is silently
+    # ignored; load() remains available to install the hooks explicitly.
+    _install_hooks()
+except Exception:
+    pass

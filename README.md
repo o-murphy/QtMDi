@@ -102,6 +102,9 @@ qtawesome.icon("mds-sharp-400.home")
 
 # basic variablefont ttf based icon
 qtawesome.icon("mdf-sharp.home")
+
+# simpleicons variablefont icon
+qtawesome.icon("si.cplusplus")
 ```
 
 #### Create an app
