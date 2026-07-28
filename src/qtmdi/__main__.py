@@ -1,4 +1,5 @@
 import sys
+
 import qtawesome
 from qtawesome.icon_browser import IconBrowser
 from qtpy import QtWidgets

@@ -77,7 +77,7 @@ def _create_symbols_prefix(filename):
     """creates prefix for dynamic loaded symbol fonts"""
     try:
         return f"mds-{os.path.splitext(filename)[0].split('-')[-1]}"
-    except Exception as exc:
+    except IndexError as exc:
         print(exc)
         return "mds-other"
 
@@ -178,7 +178,9 @@ def _install_hooks():
         qtawesome.charmap = _lazy_charmap
 
 
-def load(app: QtWidgets.QApplication, lazy: bool = True, load_only: set = None):
+def load(
+    app: QtWidgets.QApplication, lazy: bool = True, load_only: set | None = None
+):
     """Registers qtmdi fonts on the current QApplication.
 
     Note that qtawesome.icon()/font()/charmap() already lazily pick up
@@ -226,5 +228,5 @@ try:
     # installed, so any failure here (missing/broken binding) is silently
     # ignored; load() remains available to install the hooks explicitly.
     _install_hooks()
-except Exception:
+except Exception:  # noqa: BLE001, S110 - any missing/broken Qt binding must not block import
     pass

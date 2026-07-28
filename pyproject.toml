@@ -40,7 +40,7 @@ dev = [
     "flake8>=7.3.0",
     "fonttools>=4.61.1",
     "pytest>=9.1.1",
-    "ruff>=0.15.22",
+    "ruff>=0.16.0",
     "pyqt6>=6.7.1",
 ]
 
@@ -52,3 +52,8 @@ hook-dirs = "qtmdi.__pyinstaller:get_hook_dirs"
 
 [tool.pytest]
 testpaths = ["tests"]
+
+[tool.ruff.lint.per-file-ignores]
+# PyInstaller discovers hooks by the literal filename "hook-<module>.py";
+# the hyphen is required and can't be renamed to satisfy N999.
+"src/qtmdi/__pyinstaller/hook-qtmdi.py" = ["N999"]

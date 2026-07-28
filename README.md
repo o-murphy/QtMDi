@@ -112,6 +112,7 @@ qtawesome.icon("si.cplusplus")
 ```python
 from qtpy import QtWidgets
 
+
 class Example(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
@@ -145,19 +146,21 @@ class Example(QtWidgets.QMainWindow):
         self.btn.setFixedSize(48, 48)
         self.btn.setIconSize(32, 32)
         self.lt.addWidget(self.btn)
-        
+
+
 def run():
     app = QtWidgets.QApplication()
-    
+
     # Load extension on your app instance
     qtmdi.load(app)
-    
+
     qtawesome.dark(app)
     w = Example()
     w.show()
     sys.exit(app.exec_())
-        
-if __name__ == '__main__':    
+
+
+if __name__ == "__main__":
     run()
 ```
 
