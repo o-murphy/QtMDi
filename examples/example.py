@@ -1,7 +1,9 @@
 import sys
+
 import qtawesome
-import qtmdi
 from qtpy import QtWidgets
+
+import qtmdi
 
 
 class Example(QtWidgets.QMainWindow):

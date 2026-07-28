@@ -14,7 +14,9 @@ import zipfile
 
 from qtmdi import BRANDS_DIR
 
-RELEASES_API = "https://api.github.com/repos/simple-icons/simple-icons-font/releases/latest"
+RELEASES_API = (
+    "https://api.github.com/repos/simple-icons/simple-icons-font/releases/latest"
+)
 REQUEST_HEADERS = {
     "Accept": "application/vnd.github+json",
     "User-Agent": "QtMDi-fetch-brand-icons",
@@ -46,14 +48,18 @@ def main() -> None:
 
     os.makedirs(BRANDS_DIR, exist_ok=True)
 
-    with archive.open("font/SimpleIcons.ttf") as src:
-        with open(os.path.join(BRANDS_DIR, "simple-icons.ttf"), "wb") as dst:
-            dst.write(src.read())
+    with (
+        archive.open("font/SimpleIcons.ttf") as src,
+        open(os.path.join(BRANDS_DIR, "simple-icons.ttf"), "wb") as dst,
+    ):
+        dst.write(src.read())
 
     with archive.open("font/simple-icons.json") as fp:
         icons = json.load(fp)
     charmap = {icon["slug"]: f"0x{icon['code']}" for icon in icons}
-    with open(os.path.join(BRANDS_DIR, "simple-icons-charmap.json"), "w", encoding="utf-8") as fp:
+    with open(
+        os.path.join(BRANDS_DIR, "simple-icons-charmap.json"), "w", encoding="utf-8"
+    ) as fp:
         json.dump(charmap, fp)
 
     print(f"Simple Icons {version}: {len(charmap)} icons written to {BRANDS_DIR}")

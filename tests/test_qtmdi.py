@@ -1,8 +1,8 @@
 import sys
 import unittest
 
-from qtpy import QtWidgets
 import qtawesome
+from qtpy import QtWidgets
 
 from src import qtmdi
 

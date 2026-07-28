@@ -47,7 +47,11 @@ def _set_subfamily_name(font: TTFont, weight: int) -> None:
         for record in name_table.names:
             if record.nameID == name_id:
                 name_table.setName(
-                    weight_name, name_id, record.platformID, record.platEncID, record.langID
+                    weight_name,
+                    name_id,
+                    record.platformID,
+                    record.platEncID,
+                    record.langID,
                 )
 
 
