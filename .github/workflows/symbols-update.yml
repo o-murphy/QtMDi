@@ -119,11 +119,11 @@ jobs:
 
     - name: Create Release
       if: steps.check_changes.outputs.changes_made == 'true'
-      uses: actions/create-release@v1
+      uses: softprops/action-gh-release@v3
       env:
         GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
       with:
         tag_name: v${{ env.VERSION }}
-        release_name: v${{ env.VERSION }}
+        name: v${{ env.VERSION }}
         draft: false
         prerelease: false
