@@ -23,7 +23,11 @@ jobs:
 
     - uses: actions/checkout@v7
       with:
-        ref: ${{ github.head_ref }}
+        # github.head_ref is empty outside pull requests, so checkout used the
+        # SHA the run was queued with. Scheduled runs can start hours late,
+        # by which time master may have moved on (e.g. Dependabot merges),
+        # making the final push non-fast-forward. Check out the branch tip.
+        ref: ${{ github.ref_name }}
 
     - name: Install uv
       uses: astral-sh/setup-uv@1db35dd8eee11c5894872e0b383ae6c406cf738d
@@ -55,6 +59,10 @@ jobs:
         path: |
           src/qtmdi/icons/**/*.ttf
           src/qtmdi/brands/**/*.ttf
+
+    - name: Sync with remote before commit
+      # Pick up anything pushed to the branch while this run was in progress.
+      run: git pull --rebase --autostash origin ${{ github.ref_name }}
 
     - name: Commit and Push Changes (Fonts update)
       uses: stefanzweifel/git-auto-commit-action@v7
